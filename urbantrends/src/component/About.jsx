@@ -12,8 +12,8 @@ function About() {
                 <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-r from-gray-500 via-slate-500 to-gray-800 blur-3xl opacity-40 animate-pulse"></div>
             </div>
 
-            <h1 className='text-4xl md:text-8xl text-center font-tech font-bold'>Urbantrends</h1>
-            <h2 className='text-xl text-center font-header'>For</h2>
+            <h1 className='text-4xl md:text-8xl text-center font-tech font-bold underline'>Urbantrends</h1>
+            <h2 className='text-xl text-center font-header font-bold'>For</h2>
 
 
             {/* section talking about the brand */}
@@ -40,7 +40,7 @@ function About() {
                         <div className="absolute md:-top-15 left-1/2 -translate-x-1/2 bg-[#626262] text-white px-4 py-1 rounded-md shadow">
                             <h3 className="font-semibold text-sm p-4">Businesses</h3>
                         </div>
-                        <div className="text-center bg-gray-600">
+                        <div className="text-center bg-[#BCDAC8] rounded">
                             <div className="w-full h-[600px] overflow-hidden rounded-br-full">
                                 <img src={biz} alt="" className="w-full h-full object-cover" />
                             </div>

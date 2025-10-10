@@ -6,7 +6,7 @@ import enterprise from '../assets/enterprise.jpeg'
 
 function Carrousel() {
   return (
-    <div className='mt-3 md:flex justify-center gap-3 p-2 items-center bg-[rgba(166,166,166,0.6)] rounded-lg space-y-3'>
+    <div className='mt-3 md:flex justify-center gap-3 p-2 items-center bg-[rgba(166,166,166,0.6)] rounded-lg space-y-3 overflow-hidden'>
         {/* image 1 */}
         <div className='w-[120] h-90'>
           <img src={development} alt="development" className='w-full h-full object-cover rounded-lg'/>

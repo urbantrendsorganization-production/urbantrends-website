@@ -2,6 +2,8 @@ import React from 'react'
 import Carrousel from '../component/Carrousel'
 import About from '../component/About'
 import Services from '../component/Services'
+import Testimonials from '../component/Testimonials'
+import Footer from '../component/Footer'
 
 function Home() {
     return (
@@ -31,7 +33,7 @@ function Home() {
                 </div>
 
                 {/* cta buttons */}
-                <div className="w-full sm:w-3/4 md:w-1/2 mx-auto flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 bg-[rgba(166,166,166,0.6)] py-4 px-3 rounded-lg relative z-10">
+                <div className="w-full sm:w-3/4 md:w-1/2 mx-auto flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 bg-[rgba(166,166,166,0.2)] py-4 px-3 rounded-lg relative z-10">
                     <button className="bg-gradient-to-r from-[#D9D9D9] to-[#737373] text-black px-6 py-3 rounded-lg font-bold w-full sm:w-auto font-header">
                         View Products
                     </button>
@@ -54,6 +56,17 @@ function Home() {
             {/* services component */}
             <div className='mt-3'>
                 <Services />
+            </div>
+
+            {/* testimonials section */}
+            <div className='mt-3'>
+                <Testimonials />
+
+            </div>
+
+            {/* Footer section */}
+            <div className=''>
+                <Footer />
             </div>
 
         </div>
