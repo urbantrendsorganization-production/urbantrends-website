@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Carrousel from '../component/Carrousel'
 import About from '../component/About'
 import Services from '../component/Services'
 import Testimonials from '../component/Testimonials'
 import Footer from '../component/Footer'
+import { initLenis } from '../lenis'
 
 function Home() {
+
+    useEffect(() => {
+    initLenis()
+  }, [])
     return (
         <div className='p-4 space-y-5 overflow-hidden'>
             {/* heading */}

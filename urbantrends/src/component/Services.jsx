@@ -46,7 +46,7 @@ function Services() {
       <div className="absolute inset-0 flex justify-center -z-10">
         <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-r from-gray-500 via-slate-500 to-gray-800 blur-3xl opacity-40 animate-pulse"></div>
       </div>
-      <h2 className="text-2xl md:text-4xl font-bold mb-8 font-tech underline">
+      <h2 className="text-2xl md:text-4xl font-bold mb-8 font-tech underline text-center">
         Our Services
       </h2>
 
@@ -85,7 +85,7 @@ function Services() {
       </div>
       {/* products */}
 
-      <h2 className="text-2xl md:text-4xl font-bold mb-8 mt-3 font-tech underline">
+      <h2 className="text-2xl md:text-4xl font-bold mb-8 mt-3 font-tech underline text-center">
         Our Products
       </h2>
 

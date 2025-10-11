@@ -19,3 +19,14 @@
     --font-karma: 'Karma';
     --font-liny: 'Quantico'
 }
+
+html, body {
+  height: auto;
+  overflow: hidden; /* disables native scroll */
+}
+
+body {
+  scroll-behavior: auto !important;
+  overscroll-behavior: none;
+}
+
