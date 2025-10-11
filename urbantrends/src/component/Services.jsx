@@ -60,9 +60,9 @@ function Services() {
             <div
               className="text-black font-semibold font-tech text-center py-3 text-sm sm:text-base md:text-lg"
               style={{
-  background: "linear-gradient(135deg, #565656, transparent)",
-  clipPath: "polygon(0 0, 85% 0, 100% 100%, 0% 100%)"
-}}
+                background: "linear-gradient(135deg, #565656, transparent)",
+                clipPath: "polygon(0 0, 85% 0, 100% 100%, 0% 100%)"
+              }}
             >
               {service.title}
             </div>
@@ -99,9 +99,9 @@ function Services() {
             <div
               className="text-black font-semibold text-center py-3 text-sm sm:text-base md:text-lg"
               style={{
-  background: "linear-gradient(135deg, #565656, transparent)",
-  clipPath: "polygon(0 0, 85% 0, 100% 100%, 0% 100%)"
-}}
+                background: "linear-gradient(135deg, #565656, transparent)",
+                clipPath: "polygon(0 0, 85% 0, 100% 100%, 0% 100%)"
+              }}
 
             >
               {service.title}
