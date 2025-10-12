@@ -1,4 +1,3 @@
-// AboutFlipCards.jsx
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import devs from "../assets/devs.jpeg";
@@ -12,37 +11,34 @@ const smoothTransition = {
 
 function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, cta }) {
   const ref = useRef(null);
-  // threshold small so partial visible counts as in view while scrolling
   const isInView = useInView(ref, { amount: 0.25, once: false });
   const [flipped, setFlipped] = useState(false);
-  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 1024);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 1024 : false
+  );
 
-  // listen resize to update mobile/desktop behavior
   useEffect(() => {
-    function onResize() {
-      setIsMobile(window.innerWidth < 1024);
-    }
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // On mobile: flip when in view
   useEffect(() => {
-    if (isMobile) {
-      setFlipped(isInView);
-    }
+    if (isMobile) setFlipped(isInView);
   }, [isInView, isMobile]);
 
-  // On desktop we rely on hover to flip (mouse events)
   return (
     <motion.div
       ref={ref}
       className={`relative w-full rounded-2xl shadow-2xl ${bgColor} cursor-pointer`}
-      style={{ perspective: "1400px", minHeight: "48vh", maxHeight: "80vh" }} // responsive heights that let page grow
+      style={{
+        perspective: "1400px",
+        minHeight: "420px",
+        height: "auto",
+      }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
-      // only attach mouse handlers on desktop
       onMouseEnter={() => !isMobile && setFlipped(true)}
       onMouseLeave={() => !isMobile && setFlipped(false)}
     >
@@ -52,10 +48,13 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* FRONT */}
+        {/* FRONT SIDE */}
         <div
           className="absolute inset-0 rounded-2xl overflow-hidden"
-          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
         >
           <img src={image} alt={title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/70"></div>
@@ -64,28 +63,35 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
           </h2>
         </div>
 
-        {/* BACK */}
+        {/* BACK SIDE */}
         <div
-          className="absolute inset-0 flex flex-col justify-center items-center px-6 sm:px-8 text-center rounded-2xl"
+          className="absolute inset-0 flex flex-col justify-start items-center px-6 sm:px-8 text-center rounded-2xl overflow-y-auto"
           style={{
             transform: "rotateY(180deg)",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.6)",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
             background: "linear-gradient(180deg, rgba(17,17,17,0.95), rgba(0,0,0,1))",
+            boxShadow: "inset 0 0 60px rgba(0,0,0,0.6)",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
           }}
         >
+          <style>{`
+            .no-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={flipped ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: delay + 0.15 }}
-            className="max-w-xl"
+            className="max-w-xl py-8 no-scrollbar"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 text-white">{title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">{title}</h2>
             <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-line">
               {description}
             </p>
-
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
@@ -102,22 +108,14 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
 }
 
 export default function About() {
-  // enforce page can scroll if some ancestor was locking it
   useEffect(() => {
-    try {
-      // allow scrolling on html/body if any script previously locked it
-      document.documentElement.style.overflow = "auto";
-      document.body.style.overflow = "auto";
-    } catch (e) {
-      // ignore in SSR or restricted envs
-      console.warn("Could not set overflow auto", e);
-    }
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
   }, []);
 
   return (
-    // allow mobile touch scrolling and avoid overflow hidden
     <div
-      className="relative space-y-4 mt-5 p-4 overflow-auto"
+      className="relative space-y-6 mt-5 p-4 overflow-auto"
       style={{ WebkitOverflowScrolling: "touch", minHeight: "100vh" }}
     >
       {/* Glow */}
@@ -126,15 +124,16 @@ export default function About() {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.3 }}
           transition={{ duration: 1.2 }}
-          className="w-50 h-50 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full blur-3xl animate-pulse"
+          className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full  blur-3xl animate-pulse"
         />
       </div>
 
+      {/* Title */}
       <motion.h1
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9 }}
-        className="text-3xl sm:text-5xl md:text-6xl text-center font-bold underline tracking-wider font-tech "
+        className="text-3xl sm:text-5xl md:text-6xl text-center font-bold underline tracking-wider font-tech"
       >
         UrbanTrends
       </motion.h1>
@@ -143,11 +142,12 @@ export default function About() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="text-base sm:text-lg md:text-xl text-center font-semibold text-gray-700"
+        className="text-base sm:text-lg md:text-xl text-center font-semibold text-gray-700 font-tech"
       >
         For
       </motion.h2>
 
+      {/* Cards Section */}
       <section className="w-full relative py-10 sm:py-14">
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto max-w-7xl">
           <FlipCard
