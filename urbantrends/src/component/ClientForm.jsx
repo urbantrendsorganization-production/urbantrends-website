@@ -325,10 +325,10 @@ export default function ClientForm() {
                 {message && <p className="mt-4 text-sm">{message}</p>}
             </form>
 
-            {/* footer */}
+            {/* footer
             <div className="mt-5">
                 <Footer />
-            </div>
+            </div> */}
 
         </div>
 

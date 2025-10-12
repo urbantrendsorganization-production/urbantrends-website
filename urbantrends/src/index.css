@@ -22,11 +22,13 @@
 
 html, body {
   height: auto;
-  overflow: hidden; /* disables native scroll */
+  min-height: 100vh;
+  overflow-x: hidden; /* hide horizontal scroll only */
+  overflow-y: auto;   /* enable vertical scroll */
+  scroll-behavior: smooth;
 }
 
 body {
-  scroll-behavior: auto !important;
   overscroll-behavior: none;
 }
 
