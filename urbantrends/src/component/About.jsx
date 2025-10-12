@@ -77,7 +77,8 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
 
 export default function About() {
   return (
-    <div className="relative space-y-4 mt-5 p-3 overflow-hidden">
+    <div className="relative space-y-4 mt-5 p-3 sm:overflow-hidden overflow-auto min-h-screen">
+
       {/* Glow */}
       <div className="absolute inset-0 flex justify-center -z-10">
         <motion.div
