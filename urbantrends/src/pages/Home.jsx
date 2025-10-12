@@ -59,7 +59,7 @@ function Home() {
             </div>
 
             {/* services component */}
-            <div className='mt-3'>
+            <div className=''>
                 <Services />
             </div>
 

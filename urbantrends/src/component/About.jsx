@@ -110,13 +110,14 @@ export default function About() {
       document.body.style.overflow = "auto";
     } catch (e) {
       // ignore in SSR or restricted envs
+      console.warn("Could not set overflow auto", e);
     }
   }, []);
 
   return (
     // allow mobile touch scrolling and avoid overflow hidden
     <div
-      className="relative space-y-6 mt-5 p-4 overflow-auto"
+      className="relative space-y-4 mt-5 p-4 overflow-auto"
       style={{ WebkitOverflowScrolling: "touch", minHeight: "100vh" }}
     >
       {/* Glow */}
@@ -125,7 +126,7 @@ export default function About() {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.3 }}
           transition={{ duration: 1.2 }}
-          className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-r from-gray-500 via-slate-500 to-gray-800 blur-3xl animate-pulse"
+          className="w-50 h-50 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full blur-3xl animate-pulse"
         />
       </div>
 
@@ -133,7 +134,7 @@ export default function About() {
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9 }}
-        className="text-3xl sm:text-5xl md:text-6xl text-center font-bold underline tracking-wider"
+        className="text-3xl sm:text-5xl md:text-6xl text-center font-bold underline tracking-wider font-tech "
       >
         UrbanTrends
       </motion.h1>
@@ -159,17 +160,17 @@ export default function About() {
           <FlipCard
             image={biz}
             title="Businesses"
-            bgColor="bg-[#BCDAC8]"
-            description={`We help businesses build strong digital brands through sleek websites, automation systems, and customer-driven solutions.`}
-            cta="Build With Us"
+            description={`UrbanTrends solves this by giving brands the tools, systems, and digital experiences they need to stay relevant and competitive.
+\n\n. modern websites that attract customers\n. Improve visibility through SEO\n. Automate workflows and operations\n. Integrate AI to make smarter decisions`}
+            cta="Join the Movement"
             delay={0.15}
           />
 
           <FlipCard
             image={prise}
             title="Enterprises"
-            description={`For enterprises, UrbanTrends delivers scalable platforms, optimized performance, and tech ecosystems that evolve with your brand.`}
-            cta="Explore Solutions"
+            description={`Legacy systems, disconnected departments, and manual workflows make it hard to stay agile in a digital-first world.\n\n. Automate and optimize internal processes\n. Strengthen cybersecurity and compliance\n. Move operations to scalable cloud infrastructures.`}
+            cta="Join the Movement"
             delay={0.3}
           />
         </div>

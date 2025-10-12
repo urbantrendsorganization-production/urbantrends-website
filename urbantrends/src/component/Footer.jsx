@@ -50,6 +50,7 @@ function Footer() {
             <li><a href="#" className="hover:underline">E-commerce Projects</a></li>
             <li><a href="#" className="hover:underline">Branding/Design</a></li>
             <li><a href="#" className="hover:underline">Industry Solutions</a></li>
+            <li><a href="https://developers.urbantrends.dev" target='_blank' className="hover:underline">UrbanTrends Developers</a></li>
           </ul>
         </div>
       </div>
