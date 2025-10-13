@@ -1,82 +1,133 @@
-import React, { useState } from 'react'
-import logo from '../assets/urbantrends.svg'
-import { CiStar } from "react-icons/ci";
-import { HiMenu, HiX } from "react-icons/hi"; // hamburger + close icons
-import { DiCode } from "react-icons/di";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import logo from "../assets/urbantrends.svg";
+import { Link } from "react-router-dom";
 
+const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Products", path: "/products" },
+    { name: "Portfolio", path: "/portfolio" },
+    { name: "Contact", path: "/contact" },
+];
 
 function Header() {
-    const [isOpen, setIsOpen] = useState(false);
-    const navigate = useNavigate()
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <div className="w-full flex bg-gray-100 shadow-md shadow-[#DDDDDD] items-center justify-between px-6 py-4 sticky top-0 z-50">
-            {/* logo (left) */}
-            <div>
-                <img src={logo} alt="urbantrends logo" className="w-12 md:w-18" />
-            </div>
+        <header
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
+                ? "bg-white/90 backdrop-blur-md shadow-md border-b border-gray-200/50"
+                : "bg-gradient-to-r from-white via-[#F9FAFB] to-white"
+                }`}
+        >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16 lg:h-20">
+                    {/* Logo */}
+                    <div className="flex-shrink-0 hover:scale-105 transition-transform duration-200">
+                        <img
+                            src={logo}
+                            alt="UrbanTrends"
+                            className="h-8 sm:h-14 lg:h-16 w-auto drop-shadow-sm"
+                        />
+                    </div>
 
-            {/* desktop navigation */}
-            <nav className="hidden md:flex flex-1">
-                <ul className="flex justify-center gap-8 text-white mx-auto bg-[#626262] py-3 px-6 rounded mt-4 font-header font-bold">
-                    {[
-                        { name: "Home", link: "/" },
-                        { name: "About", link: "/about" },
-                        { name: "Products", link: "/products" },
-                        { name: "Portfolio", link: "/portfolio" },
-                        { name: "Contact", link: "/contact" },
-                    ].map((item) => (
-                        <li key={item.name} className="flex items-center gap-2">
-                            <a
-                                href={item.link}
-                                className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full"
+                    {/* Desktop Navigation */}
+                    <nav className="hidden lg:block">
+                        <ul className="flex items-center gap-8 bg-white/70 backdrop-blur-md px-6 py-3 font-tech rounded-full shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
+                            {navLinks.map((link) => (
+                                <li key={link.name} className="relative group text-md">
+                                    <Link to={link.path} className="cursor-pointer text-gray-700 font-medium hover:text-gray-600 transition-colors duration-200 py-2 ">
+                                        {link.name}
+                                    </Link>
+                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-600 group-hover:w-full transition-all duration-300" />
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    {/* Right Section */}
+                    <div className="flex items-center gap-4">
+                        {/* Account Avatar */}
+                        <div className="hidden sm:block">
+                            <button className="px-3 py-2 border-2 border-black rounded">Order now</button>
+                        </div>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="lg:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-colors duration-200"
+                            aria-label="Toggle menu"
+                        >
+                            <svg
+                                className={`w-6 h-6 transform transition-transform duration-200 ${isMobileMenuOpen ? "rotate-90" : ""
+                                    }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                             >
-                                {item.name}
-                            </a>
-                            <CiStar />
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-
-
-
-            {/* right side (desktop button) */}
-            <div className="hidden md:block">
-                <button className="bg-white border-2 border-black flex items-center gap-2 px-5 py-3 rounded-lg font-bold text-lg hover:bg-black hover:text-white transition font-tech" onClick={ () => navigate('/services_&_products')}>
-                    <DiCode className="text-3xl" />
-                    <span>Order Now</span>
-                </button>
-            </div>
-
-
-            {/* mobile hamburger */}
-            <div className="md:hidden">
-                <button onClick={() => setIsOpen(!isOpen)} className="text-black text-3xl">
-                    {isOpen ? <HiX /> : <HiMenu />}
-                </button>
-            </div>
-
-            {/* mobile menu */}
-            {isOpen && (
-                <div className="absolute top-16 left-0 w-full bg-[#626262] text-white py-6 px-4 md:hidden z-50 mt-3 space-y-3">
-                    <ul className="flex flex-col gap-6 font-medium text-center">
-                        <li><a href="">Home</a></li>
-                        <li><a href="">About</a></li>
-                        <li><a href="">Products</a></li>
-                        <li><a href="">Portfolio</a></li>
-                        <li><a href="">Contact</a></li>
-                    </ul>
-                    <button className="mt-6 w-full flex items-center justify-center gap-2 bg-white text-black border-2 border-black py-3 rounded">
-                        <DiCode className="text-3xl" />
-                        <span className='font-tech font-bold'>Order Now</span>
-                    </button>
-
+                                {isMobileMenuOpen ? (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                ) : (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                )}
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            )}
-        </div>
-    )
+
+                {/* Mobile Menu */}
+                <div
+                    className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
+                >
+                    <nav className="py-4">
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-100 p-4">
+                            <ul className="space-y-3 w-full text-center">
+                                {navLinks.map((link) => (
+                                    <li key={link.name}>
+                                        <Link
+                                            to={link.path}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="w-full px-4 py-3 text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 text-center"
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* Mobile Account */}
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex justify-center">
+                                <button className="bg-gray-600 text-white font-medium px-6 py-2 rounded-full hover:bg-blue-700 transition-all duration-200 shadow-md">
+                                    Order Now
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+
+            </div>
+        </header>
+    );
 }
 
-export default Header
+export default Header;
