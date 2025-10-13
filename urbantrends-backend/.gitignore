@@ -1,0 +1,49 @@
+# === Node ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+# (Optional: keep it if you want reproducible installs)
+
+# === Environment Variables ===
+.env
+.env.*
+!.env.example  # keep a safe example file if you want
+
+# === Build Output ===
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+
+# === Logs ===
+logs/
+*.log
+*.out
+*.err
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === IDE / Editor Files ===
+.vscode/
+.idea/
+*.swp
+
+# === Docker ===
+.docker/
+docker-compose.override.yml
+
+# === Testing ===
+jest-cache/
+jest-results/
+coverage/
+
+# === Misc ===
+*.pid
+*.seed
+*.tgz
