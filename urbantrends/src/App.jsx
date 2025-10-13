@@ -12,7 +12,7 @@ import About_us from './pages/About_us'
 function App() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Routes>
         <Route path='/' element={ <Home />}/>
         <Route path='/services_&_products' element={ <Services_Products /> }/>
