@@ -17,10 +17,6 @@ const allowedOrigins = [
 ]
 
 
-
-// middleware
-app.use(express.json());
-
 // connect to database
 connectDb();
 
@@ -37,6 +33,10 @@ app.use (
     })
 
 );
+
+// middleware
+
+app.use(express.json());
 
 // routes init
 app.use('/api', serviceRoutes);
