@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://developers.urbantrends.dev",
+    "https://www.urbantrends.dev",
 ]
 
 
