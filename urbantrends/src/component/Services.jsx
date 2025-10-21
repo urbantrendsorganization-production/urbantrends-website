@@ -1,42 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 
 function Services() {
-  const services = [
-    {
-      title: "Web Development",
-      img: "https://cdn.cosmos.so/16c7d975-782f-4bfb-b763-38d3677d33c2?format=jpeg",
-      desc: "We build responsive, modern websites tailored to your needs."
-    },
-    {
-      title: "UI/UX Design",
-      img: "https://cdn.cosmos.so/4378898b-5fd0-4fb0-afcd-1df40dff9181?format=jpeg",
-      desc: "Crafting clean, user-friendly interfaces that engage audiences."
-    },
-    {
-      title: "SEO Optimization",
-      img: "https://cdn.cosmos.so/9294d41d-c55e-437f-8af2-0b5bd4743f7d?format=jpeg",
-      desc: "Boost your site’s ranking and visibility across search engines."
-    }
-  ]
+  const [servicesShowcase, setServicesShowcase] = useState([]);
+  const [error, setError ] = useState(null) 
 
-  const products = [
-    {
-      title: "Website Templates & Themes",
-      img: "https://cdn.cosmos.so/1ccc1f48-4647-4e8b-b601-929cc3a40230?format=jpeg",
-      desc: "We build responsive, modern websites tailored to your needs."
-    },
-    {
-      title: "Automation Tools",
-      img: "https://cdn.cosmos.so/018f49c3-41ea-435f-9056-cad31db3a22d?format=jpeg",
-      desc: "Crafting clean, user-friendly interfaces that engage audiences."
-    },
-    {
-      title: "Business Growth Kits",
-      img: "https://cdn.cosmos.so/cf94068e-6cb1-4eaa-b56f-819d3a073986?format=jpeg",
-      desc: "Boost your site’s ranking and visibility across search engines."
-    }
-  ]
+  const mainLink = import.meta.env.VITE_MAIN_LINK;
 
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get(`${mainLink}/v2/api/services`)
+      setServicesShowcase(response.data)
+    } catch (error) {
+      setError(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchServices()
+  }, []);
+
+  if (error) return console.log(`Error: ${error.message}`)
 
 
   return (
@@ -51,7 +35,7 @@ function Services() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {services.map((service, index) => (
+        {servicesShowcase.map((service, index) => (
           <div
             key={index}
             className="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300"
@@ -70,7 +54,7 @@ function Services() {
             {/* Image */}
             <div className="w-full h-40 sm:h-48 md:h-56 overflow-hidden rounded">
               <img
-                src={service.img}
+                src={service.service_image}
                 alt={service.title}
                 className="w-full h-full object-cover"
               />
@@ -78,7 +62,7 @@ function Services() {
 
             {/* Description */}
             <div className="p-4">
-              <p className="text-gray-700 text-sm sm:text-base">{service.desc}</p>
+              <p className="text-gray-700 text-sm sm:text-base">{service.description}</p>
             </div>
           </div>
         ))}
@@ -90,7 +74,7 @@ function Services() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map((service, index) => (
+        {servicesShowcase.map((service, index) => (
           <div
             key={index}
             className="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300"
@@ -110,7 +94,7 @@ function Services() {
             {/* Image */}
             <div className="w-full h-40 sm:h-48 md:h-56 overflow-hidden">
               <img
-                src={service.img}
+                src={service.service_image}
                 alt={service.title}
                 className="w-full h-full object-cover"
               />
@@ -118,7 +102,7 @@ function Services() {
 
             {/* Description */}
             <div className="p-4">
-              <p className="text-gray-700 text-sm sm:text-base">{service.desc}</p>
+              <p className="text-gray-700 text-sm sm:text-base">{service.description}</p>
             </div>
           </div>
         ))}

@@ -1,6 +1,5 @@
 // MultiStepForm.jsx
 import React, { useState, useRef } from "react";
-import Footer from "./Footer";
 
 /**
  * Multi-step order form for UrbanTrends
