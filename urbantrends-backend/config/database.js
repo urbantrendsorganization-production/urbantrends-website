@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const successMsg = `all system are good sir`
+
 async function connectDb() {
  
     try {
@@ -12,7 +14,7 @@ async function connectDb() {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         });
-        console.log('Database connected successfully');
+        console.log(`Database connected successfully. ${successMsg}`);
         return connection;
     } catch (error) {
         console.log('Database connection failed:', error);
