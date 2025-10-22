@@ -2,6 +2,7 @@ import connectDb from "./config/database.js";
 import express from "express";
 import dotenv from "dotenv";
 import serviceRoutes from './src/Routes/ServiceRoutes.js';
+import clientRoutes from './src/Routes/clientRoutes.js'
 import cors from 'cors';
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use(express.json());
 
 // routes init
 app.use('/api', serviceRoutes);
+app.use('/testimony', clientRoutes);
 
 
 // start server
