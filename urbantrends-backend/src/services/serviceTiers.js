@@ -19,3 +19,15 @@ export const addTiers = async (req, res) => {
         res.status(500).json({message: 'error adding tiers', error: error.message})
     }
 };
+
+// get all tiers;
+export const getTiers = async (req, res) => {
+    try {
+        const database = await connectDb();
+
+        const [rows] = await database.execute('SELECT * FROM urbantrends_tiers');
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({message: "Error fetching tiers", error: error.message})
+    }
+}

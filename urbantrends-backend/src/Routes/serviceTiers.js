@@ -1,9 +1,10 @@
 import express from 'express'
-import { addTiers } from '../services/serviceTiers.js';
+import { addTiers, getTiers } from '../services/serviceTiers.js';
 
 const router = express.Router();
 
 router.post('/add-tiers', addTiers);
+router.get('/tiers', getTiers);
 
 
 
