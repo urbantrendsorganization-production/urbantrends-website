@@ -8,7 +8,7 @@ export const addTiers = async (req, res) => {
         const database = await connectDb();
         const { showcase_slug, tier_name, price, description, features, delivery_time } = req.body;
 
-        if (!showcase_slug || !tier_name || !price || description) {
+        if (!showcase_slug || !tier_name || !price || !description) {
             return res.status(400).json({message: "kindly enter crucial fields"})
         }
 
