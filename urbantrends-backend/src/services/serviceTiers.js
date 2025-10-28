@@ -31,3 +31,21 @@ export const getTiers = async (req, res) => {
         res.status(500).json({message: "Error fetching tiers", error: error.message})
     }
 }
+
+// select tier by slug_
+export const getTiersBySlug = async (req, res) => {
+    try {
+        const database = await connectDb();
+        const { slug } = req.params;
+
+        const [rows] = await database.execute('SELECT * FROM urbantrends_tiers WHERE showcase_slug = ?', [slug]);
+
+        if (rows.affectedRows === 0) {
+            return res.status(400).json({message: 'tier by this slug name not found'})
+        }
+
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({message: 'Error fetching tier by slug', error: error.message})
+    }
+};
