@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import '../index.css';
+import { useNavigate } from 'react-router-dom';
 
 const Card = () => {
   const [getServices, setGetServices] = useState([]);
   const backendLink = import.meta.env.VITE_MAIN_LINK;
   const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchServices = async () => {
     try {
@@ -27,6 +29,10 @@ const Card = () => {
     current.scrollLeft += direction === 'left' ? -scrollAmount : scrollAmount;
   };
 
+  const handleRedirect = (slug) => {
+    navigate(`/services/${slug}`)
+  };
+
   return (
     <section className="card-section">
       <button className="scroll-arrow left" onClick={() => scroll('left')}>
@@ -35,7 +41,7 @@ const Card = () => {
 
       <div className="card-container" ref={scrollRef} >
         {getServices?.map((service) => (
-          <div className="card" key={service.id}>
+          <div className="card" key={service.id} onClick={ () => handleRedirect(service.slug)}>
             <img
               src={service.service_image}
               alt={service.title}
