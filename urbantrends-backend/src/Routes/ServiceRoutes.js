@@ -1,5 +1,5 @@
 import express from 'express';
-import { addMiniminalService, deleteMinimalService, getMinimalServiceById, getMinimalServices } from '../services/minimalServices.js';
+import { addMiniminalService, deleteMinimalService, getMinimalServiceById, getMinimalServices, updateServiceById } from '../services/minimalServices.js';
 
 
 const router = express.Router();
@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/add-ser', addMiniminalService);
 router.get('/services', getMinimalServices);
 router.get('/service/:id', getMinimalServiceById);
+router.put('/services/:id', updateServiceById);
 router.delete('/service/:id', deleteMinimalService);
 
 export default router;
