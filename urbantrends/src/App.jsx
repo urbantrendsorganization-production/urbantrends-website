@@ -7,6 +7,7 @@ import Products from './pages/Products'
 import Portfolio from './pages/Portfolio'
 import Contact from './pages/Contact'
 import About_us from './pages/About_us'
+import Services from './pages/Services'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/products' element={ <Products />}/>
         <Route path='/portfolio' element={ <Portfolio />}/>
         <Route path='/contact' element={ <Contact />}/>
+        <Route path='/services/:slug' element={ <Services /> }/>
         
         <Route />
       </Routes>
