@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import Carrousel from '../component/Carrousel'
 import About from '../component/About'
-import Services from '../component/Services'
 import Testimonials from '../component/Testimonials'
 import Footer from '../component/Footer'
 import { initLenis } from '../lenis'
 import Header from '../component/Header'
+import Card from '../component/Card'
 
 function Home() {
 
@@ -63,7 +63,14 @@ function Home() {
 
                 {/* services component */}
                 <div className=''>
-                    <Services />
+                    <h2 className='text-center font-bold text-4xl font-tech'>Our Services</h2>
+                    <Card />
+                </div>
+
+                {/* products component */}
+                <div className=''>
+                    {/* <h2 className='text-center font-bold text-4xl'>Our Products</h2> */}
+                    {/* <Card /> */}
                 </div>
 
                 {/* testimonials section */}
