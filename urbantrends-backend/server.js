@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import serviceRoutes from './src/Routes/ServiceRoutes.js';
 import clientRoutes from './src/Routes/clientRoutes.js';
 import serviceTiers from './src/Routes/serviceTiers.js';
+import productRoutes from './src/Routes/ProductsRoutes.js'
 import cors from 'cors';
 
 dotenv.config();
@@ -44,6 +45,7 @@ app.use(express.json());
 app.use('/api', serviceRoutes);
 app.use('/testimony', clientRoutes);
 app.use('/tiers', serviceTiers);
+app.use('/products', productRoutes);
 
 
 // start server
