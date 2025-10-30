@@ -10,7 +10,7 @@ export const addProductTiers = async (req, res) => {
             return res.status(400).json({message: "All products tiers page not complete"})
         };
 
-        const [result] = await database.execute('INSERT INTO urbantrends_products_tiers ( products_slug, tier_name, price, description, features, delivery_time ) VALUES ( ?, ?, ?, ?, ?, ? )', [ products_slug, tier_name, price, description, features, delivery_time ]);
+        const [result] = await database.execute('INSERT INTO urbantrends_products_tiers ( products_slug, tier_name, price, description, features, delivery_time ) VALUES ( ?, ?, ?, ?, ?, ? )', [ products_slug, tier_name, price, description, JSON.stringify(features), delivery_time ]);
 
         res.status(201).json({message: 'Product added successfully', response: result.insertId});
     } catch (error) {
