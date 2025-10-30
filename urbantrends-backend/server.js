@@ -52,5 +52,5 @@ app.use('/tiers-products', productTiers);
 
 // start server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT} an now is good`);
 });
