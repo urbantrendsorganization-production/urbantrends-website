@@ -8,6 +8,7 @@ import Portfolio from './pages/Portfolio'
 import Contact from './pages/Contact'
 import About_us from './pages/About_us'
 import Services from './pages/Services'
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path='/portfolio' element={ <Portfolio />}/>
         <Route path='/contact' element={ <Contact />}/>
         <Route path='/services/:slug' element={ <Services /> }/>
-        
+        <Route path='/product/:slug_name' element={ <ProductDetails /> }/>
         <Route />
       </Routes>
     </>

@@ -6,6 +6,7 @@ import Footer from '../component/Footer'
 import { initLenis } from '../lenis'
 import Header from '../component/Header'
 import Card from '../component/Card'
+import ProductsCard from '../component/ProductsCard'
 
 function Home() {
 
@@ -63,14 +64,12 @@ function Home() {
 
                 {/* services component */}
                 <div className=''>
-                    <h2 className='text-center font-bold text-4xl font-tech'>Our Services</h2>
                     <Card />
                 </div>
 
                 {/* products component */}
                 <div className=''>
-                    {/* <h2 className='text-center font-bold text-4xl'>Our Products</h2> */}
-                    {/* <Card /> */}
+                    <ProductsCard />
                 </div>
 
                 {/* testimonials section */}
