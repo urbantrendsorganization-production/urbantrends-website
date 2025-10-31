@@ -3,7 +3,7 @@ import logo from '../assets/urbantrends.svg'
 
 function Footer() {
   return (
-    <footer className="w-full text-black py-10 px-6 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]">
+    <footer className="w-full text-black py-10 px-6 ">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 text-center">
         
         {/* Logo + Brand */}

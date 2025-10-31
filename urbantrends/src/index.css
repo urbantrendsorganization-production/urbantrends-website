@@ -208,9 +208,15 @@ html, body {
   overflow-x: hidden; /* hide horizontal scroll only */
   overflow-y: auto;   /* enable vertical scroll */
   scroll-behavior: smooth;
+  background-color: red;
 }
 
 body {
+  background: linear-gradient(to bottom, #f9f9f9, white, #eaeaea);
+  background-attachment: fixed;
   overscroll-behavior: none;
+  margin: 0;
+  padding: 0;
 }
+
 

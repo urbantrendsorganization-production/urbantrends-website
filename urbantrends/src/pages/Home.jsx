@@ -16,8 +16,7 @@ function Home() {
 
     return (
         <>
-            <Header />
-            <div className='p-4 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea] space-y-5 overflow-hidden mt-18 md:mt-10'>
+            <div className='p-4 space-y-5 overflow-hidden mt-18 md:mt-10'>
                 {/* HERO SECTION */}
                 <section className="relative flex flex-col items-center text-center overflow-hidden py-16 sm:py-20 md:py-28">
 
@@ -66,7 +65,7 @@ function Home() {
             </div>
 
             {/* about component */}
-            <div className='mt-10 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]'>
+            <div className='mt-10'>
                 <About />
             </div>
 

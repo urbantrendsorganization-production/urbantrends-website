@@ -35,7 +35,7 @@ function ProductDetails() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="max-w-7xl mx-auto px-6 py-16 mt-5">
       <h1 className="text-4xl font-bold text-center text-gray-900 mb-12">
         {slug_name?.replace(/-/g, ' ').toUpperCase()} Packages
       </h1>
@@ -60,7 +60,7 @@ function ProductDetails() {
             return (
               <div
                 key={tier.id}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden flex flex-col"
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden flex flex-col mt-8"
               >
                 <div className="p-6 flex flex-col h-full">
                   <h2 className="text-2xl font-semibold text-gray-800 mb-3 text-center">

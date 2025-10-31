@@ -41,7 +41,7 @@ function ProductsCard() {
   }
 
   return (
-    <div className="relative mx-auto px-4 py-12 group bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]">
+    <div className="relative mx-auto px-4 py-12 group ">
       <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">
         Our Products
       </h2>

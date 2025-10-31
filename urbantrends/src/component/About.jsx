@@ -3,6 +3,7 @@ import { motion, useInView } from "framer-motion";
 import devs from "../assets/devs.jpeg";
 import biz from "../assets/business.jpeg";
 import prise from "../assets/entss.jpeg";
+import { useNavigate } from "react-router-dom";
 
 const smoothTransition = {
   duration: 1.0,
@@ -13,6 +14,7 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.25, once: false });
   const [flipped, setFlipped] = useState(false);
+  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth < 1024 : false
   );
@@ -57,7 +59,7 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
           }}
         >
           <img src={image} alt={title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-gray-600/70"></div>
           <h2 className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 text-white text-lg sm:text-xl md:text-2xl font-semibold px-4 py-2 rounded-xl shadow-md">
             {title}
           </h2>
@@ -93,10 +95,11 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
               {description}
             </p>
             <motion.button
+              onClick={ () => navigate('/portfolio')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.2 }}
-              className="mt-6 sm:mt-8 px-5 sm:px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-full shadow-lg hover:opacity-90 text-sm sm:text-base"
+              className="mt-6 sm:mt-8 px-5 sm:px-6 py-2.5 text-white font-semibold rounded-full shadow-lg hover:opacity-90 text-sm sm:text-base"
             >
               {cta}
             </motion.button>
