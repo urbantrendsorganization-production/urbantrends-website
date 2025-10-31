@@ -116,6 +116,25 @@
   scrollbar-width: none;     /* Firefox */
 }
 
+@keyframes gradientShift {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.35;
+    background-position: 0% 50%;
+  }
+  50% {
+    transform: scale(1.1) translateY(-10px);
+    opacity: 0.5;
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  animation: gradientShift 10s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+
 
 @media (max-width: 1024px) {
   .card-container {

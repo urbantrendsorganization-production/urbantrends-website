@@ -13,79 +13,83 @@ function Home() {
     useEffect(() => {
         initLenis()
     }, [])
+
     return (
         <>
             <Header />
-            <div className='p-4 space-y-5 overflow-hidden mt-18 md:mt-10'>
-                {/* heading */}
-                <h1 className='text-center text-2xl sm:text-3xl md:text-5xl lg:text-6xl  md:mt-10 font-light leading-snug font-tech'>
-                    Building Digital Experiences <br />
-                    That <span className='font-bold font-tech animate-gray-cycle'>Drive Growth</span>
-                </h1>
+            <div className='p-4 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea] space-y-5 overflow-hidden mt-18 md:mt-10'>
+                {/* HERO SECTION */}
+                <section className="relative flex flex-col items-center text-center overflow-hidden py-16 sm:py-20 md:py-28">
 
+                    {/* soft gradient background */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea] -z-10"></div>
 
-                {/* sub-heading */}
-                <h2 className='text-center text-sm sm:text-base md:text-lg text-[#6B6B6B] mt-2 leading-relaxed max-w-3xl mx-auto px-2 font-tech'>
-                    At UrbanTrends, we design and develop high-performance websites, apps, and tools
-                    that help businesses scale, connect, and thrive in the digital era.
-                </h2>
-
-                {/* nice horizontal line */}
-                <hr className='w-1/2 sm:w-1/3 mx-auto border-gray-300' />
-
-                {/* wrapper */}
-                <div className="relative w-full mt-4 sm:mt-6">
-
-                    {/* glowing background element */}
-                    <div className="absolute inset-0 flex justify-center -z-10">
-                        <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-r from-gray-500 via-slate-500 to-gray-800 blur-3xl opacity-40 animate-pulse"></div>
+                    {/* animated background glow */}
+                    <div className="absolute inset-0 flex justify-center items-center -z-10">
+                        <div className="w-[28rem] h-[28rem] bg-gradient-to-r from-gray-600 via-slate-500 to-gray-900 rounded-full blur-[120px] opacity-30 animate-pulse"></div>
                     </div>
 
-                    {/* cta buttons */}
-                    <div className="w-full sm:w-3/4 md:w-1/2 mx-auto flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 bg-[rgba(166,166,166,0.2)] py-4 px-3 rounded-lg relative z-10">
-                        <button className="bg-gradient-to-r from-[#D9D9D9] to-[#737373] text-black px-6 py-3 rounded-lg font-bold w-full sm:w-auto font-header">
-                            View Products
+                    {/* main heading */}
+                    <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-snug font-tech tracking-tight drop-shadow-sm">
+                        Building Digital Experiences <br />
+                        That <span className="font-bold font-tech bg-gradient-to-r from-gray-900 via-slate-700 to-gray-400 bg-clip-text text-transparent animate-pulse-slow">
+                            Drive Growth
+                        </span>
+                    </h1>
+
+                    {/* sub-heading */}
+                    <p className="mt-5 text-sm sm:text-base md:text-lg text-[#6B6B6B] max-w-2xl mx-auto px-4 font-tech leading-relaxed">
+                        At UrbanTrends, we design and develop high-performance websites, apps, and tools
+                        that help businesses scale, connect, and thrive in the digital era.
+                    </p>
+
+                    {/* decorative line */}
+                    <div className="w-24 sm:w-32 h-[2px] bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400 rounded-full mx-auto mt-6"></div>
+
+                    {/* call-to-action buttons */}
+                    <div className="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                        <button className="group relative overflow-hidden bg-gradient-to-r from-[#D9D9D9] to-[#737373] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:scale-105 shadow-md">
+                            <span className="relative z-10">View Products</span>
+                            <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </button>
-                        <button className="bg-[rgba(166,166,166,0.6)] text-black px-6 py-3 rounded-lg font-bold w-full sm:w-auto font-header">
-                            View Portfolio
+                        <button className="group relative overflow-hidden bg-[rgba(166,166,166,0.3)] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:bg-[rgba(166,166,166,0.5)] hover:scale-105 shadow-sm backdrop-blur-md">
+                            <span className="relative z-10">View Portfolio</span>
                         </button>
                     </div>
 
-                    {/* carrousel */}
-                    <div className="relative z-10 mt-8">
+                    {/* CAROUSEL SECTION (now inside hero) */}
+                    <div className="mt-14 w-full max-w-[1400px]">
                         <Carrousel />
                     </div>
-                </div>
-
-                {/* about component */}
-                <div className='mt-10'>
-                    <About />
-                </div>
-
-                {/* services component */}
-                <div className=''>
-                    <Card />
-                </div>
-
-                {/* products component */}
-                <div className=''>
-                    <ProductsCard />
-                </div>
-
-                {/* testimonials section */}
-                <div className='mt-3'>
-                    <Testimonials />
-
-                </div>
-
-                {/* Footer section */}
-                <div className=''>
-                    <Footer />
-                </div>
+                </section>
 
             </div>
-        </>
 
+            {/* about component */}
+            <div className='mt-10 bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]'>
+                <About />
+            </div>
+
+            {/* services component */}
+            <div className=''>
+                <Card />
+            </div>
+
+            {/* products component */}
+            <div className=''>
+                <ProductsCard />
+            </div>
+
+            {/* testimonials section */}
+            <div className='mt-3'>
+                <Testimonials />
+            </div>
+
+            {/* Footer section */}
+            <div className=''>
+                <Footer />
+            </div>
+        </>
     )
 }
 

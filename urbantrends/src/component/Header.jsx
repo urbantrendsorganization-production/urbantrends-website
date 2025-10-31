@@ -25,7 +25,7 @@ function Header() {
     return (
         <header
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-                ? "bg-white/90 backdrop-blur-md shadow-md border-b border-gray-200/50"
+                ? "bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea] backdrop-blur-md shadow-md border-b border-gray-200/50"
                 : "bg-gradient-to-r from-white via-[#F9FAFB] to-white"
                 }`}
         >

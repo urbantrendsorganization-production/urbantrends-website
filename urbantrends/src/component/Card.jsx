@@ -37,7 +37,7 @@ const Card = () => {
   };
 
   return (
-    <section className="relative mx-auto px-6 py-12 group">
+    <section className="relative mx-auto px-6 py-12 group bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]">
       <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">
         Explore Our Services
       </h2>

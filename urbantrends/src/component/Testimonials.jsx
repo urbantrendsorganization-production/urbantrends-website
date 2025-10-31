@@ -19,7 +19,7 @@ function Testimonials() {
   }, []);
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative bg-gradient-to-b from-[#f9f9f9] via-white to-[#eaeaea]">
       {/* glowing element */}
       <div className="absolute inset-0 flex justify-center -z-10">
         <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-r from-gray-500 via-slate-500 to-gray-800 blur-3xl opacity-40 animate-pulse"></div>
