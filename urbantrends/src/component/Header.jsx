@@ -31,7 +31,6 @@ function Header() {
 
     const syncAndFetchOrders = async () => {
       try {
-        // 1️⃣ Sync user
         const payload = {
           auth0_id: user.sub,
           name:
@@ -44,16 +43,13 @@ function Header() {
         };
 
         await axios.post(`${backendLink}/v2/users/sync`, payload);
-        console.log("✅ User synced successfully");
 
-        // 2️⃣ Fetch orders using auth0_id
         const response = await axios.get(
           `${backendLink}/v2/orders/order/${user.sub}`
         );
 
         const count = response.data.orders?.length || 0;
         setOrderCount(count);
-        console.log("🧾 Orders fetched:", count);
       } catch (error) {
         console.error("❌ Error syncing/fetching:", error.message);
       }
@@ -66,7 +62,7 @@ function Header() {
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-white/60 backdrop-blur-xl border-b border-gray-200/40 shadow-sm"
+          ? "bg-white/70 backdrop-blur-xl border-b border-gray-200/40 shadow-sm"
           : "bg-transparent"
       }`}
     >
@@ -84,7 +80,7 @@ function Header() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center justify-center flex-1">
             <ul className="flex items-center gap-10 bg-white/40 backdrop-blur-xl px-8 py-3 rounded-full shadow-sm border border-gray-200/30">
               {navLinks.map((link) => (
@@ -103,7 +99,6 @@ function Header() {
 
           {/* Right Section */}
           <div className="hidden lg:flex items-center gap-5 relative">
-            {/* 🛒 Order Icon */}
             {isAuthenticated && (
               <Link
                 to="/orders"
@@ -118,12 +113,10 @@ function Header() {
               </Link>
             )}
 
-            {/* Order Now */}
             <button className="px-5 py-2 rounded-lg border border-gray-800 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-sm">
               Order Now
             </button>
 
-            {/* Auth */}
             {!isAuthenticated ? (
               <button
                 onClick={() => loginWithRedirect()}
@@ -152,38 +145,90 @@ function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Hamburger Icon */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Toggle menu"
           >
-            <svg
-              className={`w-6 h-6 transform transition-transform duration-300 ${
-                isMobileMenuOpen ? "rotate-90" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {isMobileMenuOpen ? (
+            {isMobileMenuOpen ? (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M6 18L18 6M6 6l12 12"
                 />
-              ) : (
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M4 6h16M4 12h16M4 18h16"
                 />
-              )}
-            </svg>
+              </svg>
+            )}
           </button>
         </div>
+      </div>
+
+      {/* ✅ Mobile Menu Content */}
+      <div
+        className={`lg:hidden fixed top-16 left-0 w-full bg-white/90 backdrop-blur-xl shadow-lg border-t border-gray-200 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-5 pointer-events-none"
+        }`}
+      >
+        <nav className="py-6 px-6">
+          <ul className="space-y-4 text-center">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <Link
+                  to={link.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full py-3 text-gray-800 font-medium text-lg hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8 flex flex-col gap-3">
+            <button className="bg-gray-900 text-white font-medium px-6 py-3 rounded-full hover:bg-gray-800 transition-all duration-200 shadow-md">
+              Order Now
+            </button>
+            {!isAuthenticated ? (
+              <button
+                onClick={() => loginWithRedirect()}
+                className="px-6 py-3 rounded-full bg-gray-600 text-white font-medium hover:bg-gray-700 transition-all duration-200 shadow-md"
+              >
+                Login
+              </button>
+            ) : (
+              <button
+                onClick={() =>
+                  logout({ logoutParams: { returnTo: window.location.origin } })
+                }
+                className="px-6 py-3 rounded-full border border-gray-400 text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </nav>
       </div>
     </header>
   );
