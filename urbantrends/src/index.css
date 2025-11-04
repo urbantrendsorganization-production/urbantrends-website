@@ -208,7 +208,6 @@ html, body {
   overflow-x: hidden; /* hide horizontal scroll only */
   overflow-y: auto;   /* enable vertical scroll */
   scroll-behavior: smooth;
-  background-color: red;
 }
 
 body {

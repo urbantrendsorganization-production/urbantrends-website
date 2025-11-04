@@ -4,12 +4,13 @@ import './index.css'
 import App from './App.jsx'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { Auth0Provider } from '@auth0/auth0-react'
+import { Auth0Provider } from '@auth0/auth0-react';
+import { OrdersProvider } from './context/orderContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-    <Auth0Provider
+      <Auth0Provider
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         authorizationParams={{
@@ -19,7 +20,9 @@ createRoot(document.getElementById('root')).render(
         useRefreshTokens={true}
         cacheLocation="localstorage"
       >
-        <App />
+        <OrdersProvider>
+          <App />
+        </OrdersProvider>
       </Auth0Provider>
     </BrowserRouter>
   </React.StrictMode>,

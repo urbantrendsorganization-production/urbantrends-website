@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import logo from "../assets/urbantrends.svg";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import { ShoppingBag } from "lucide-react";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -15,12 +17,50 @@ function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const backendLink = import.meta.env.VITE_MAIN_LINK;
+  const [orderCount, setOrderCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    const syncAndFetchOrders = async () => {
+      try {
+        // 1️⃣ Sync user
+        const payload = {
+          auth0_id: user.sub,
+          name:
+            user.name ||
+            `${user.given_name || ""} ${user.family_name || ""}`.trim() ||
+            "Unnamed User",
+          email: user.email,
+          avatar: user.picture,
+          role: "client",
+        };
+
+        await axios.post(`${backendLink}/v2/users/sync`, payload);
+        console.log("✅ User synced successfully");
+
+        // 2️⃣ Fetch orders using auth0_id
+        const response = await axios.get(
+          `${backendLink}/v2/orders/order/${user.sub}`
+        );
+
+        const count = response.data.orders?.length || 0;
+        setOrderCount(count);
+        console.log("🧾 Orders fetched:", count);
+      } catch (error) {
+        console.error("❌ Error syncing/fetching:", error.message);
+      }
+    };
+
+    syncAndFetchOrders();
+  }, [isAuthenticated, user, backendLink]);
 
   return (
     <header
@@ -32,7 +72,6 @@ function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-
           {/* Logo */}
           <Link
             to="/"
@@ -63,15 +102,32 @@ function Header() {
           </nav>
 
           {/* Right Section */}
-          <div className="hidden lg:flex items-center gap-5">
+          <div className="hidden lg:flex items-center gap-5 relative">
+            {/* 🛒 Order Icon */}
+            {isAuthenticated && (
+              <Link
+                to="/orders"
+                className="relative hover:text-indigo-600 transition-colors duration-200"
+              >
+                <ShoppingBag className="w-6 h-6 text-gray-800" />
+                {orderCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    {orderCount}
+                  </span>
+                )}
+              </Link>
+            )}
+
+            {/* Order Now */}
             <button className="px-5 py-2 rounded-lg border border-gray-800 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-sm">
               Order Now
             </button>
 
+            {/* Auth */}
             {!isAuthenticated ? (
               <button
                 onClick={() => loginWithRedirect()}
-                className="px-5 py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-all duration-300 shadow-sm"
+                className="px-5 py-2 rounded-lg bg-gray-600 text-white font-medium hover:bg-slate-700 transition-all duration-300 shadow-sm"
               >
                 Login
               </button>
@@ -127,54 +183,6 @@ function Header() {
               )}
             </svg>
           </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <nav className="py-4">
-            <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-gray-100 p-4">
-              <ul className="space-y-3 w-full text-center">
-                {navLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full px-4 py-3 text-gray-700 font-medium hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 text-center"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col gap-3">
-                <button className="bg-gray-900 text-white font-medium px-6 py-2 rounded-full hover:bg-indigo-700 transition-all duration-200 shadow-md">
-                  Order Now
-                </button>
-                {!isAuthenticated ? (
-                  <button
-                    onClick={() => loginWithRedirect()}
-                    className="px-6 py-2 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-all duration-200 shadow-md"
-                  >
-                    Login
-                  </button>
-                ) : (
-                  <button
-                    onClick={() =>
-                      logout({ logoutParams: { returnTo: window.location.origin } })
-                    }
-                    className="px-6 py-2 rounded-full border border-gray-400 text-gray-700 font-medium hover:bg-gray-100 transition-all duration-200"
-                  >
-                    Logout
-                  </button>
-                )}
-              </div>
-            </div>
-          </nav>
         </div>
       </div>
     </header>
