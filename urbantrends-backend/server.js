@@ -6,6 +6,8 @@ import clientRoutes from './src/Routes/clientRoutes.js';
 import serviceTiers from './src/Routes/serviceTiers.js';
 import productRoutes from './src/Routes/ProductsRoutes.js'
 import productTiers from './src/Routes/productTiers.js';
+import OrderRoutes from './src/Routes/OrderRoutes.js';
+import userRoutes from './src/Routes/UserRoutes.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -49,6 +51,8 @@ app.use('/testimony', clientRoutes);
 app.use('/tiers', serviceTiers);
 app.use('/products', productRoutes);
 app.use('/tiers-products', productTiers);
+app.use('/orders', OrderRoutes);
+app.use('/users', userRoutes);
 
 
 // start server
