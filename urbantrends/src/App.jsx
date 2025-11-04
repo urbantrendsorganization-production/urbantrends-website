@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 import Home from './pages/Home'
 import Header from './component/Header'
 import Footer from './component/Footer'
@@ -11,19 +14,23 @@ import Services from './pages/Services'
 import ProductDetails from './pages/ProductDetails'
 
 function App() {
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+  }, [])
+
   return (
     <>
       <Header />
       <Routes>
-        <Route path='/' element={ <Home />}/>
-        <Route path='/about' element={ <About_us/>}/>
-        <Route path='/products' element={ <Products />}/>
-        <Route path='/portfolio' element={ <Portfolio />}/>
-        <Route path='/contact' element={ <Contact />}/>
-        <Route path='/services/:slug' element={ <Services /> }/>
-        <Route path='/product/:slug_name' element={ <ProductDetails /> }/>
-        <Route />
+        <Route path='/' element={<Home />} />
+        <Route path='/about' element={<About_us />} />
+        <Route path='/products' element={<Products />} />
+        <Route path='/portfolio' element={<Portfolio />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/services/:slug' element={<Services />} />
+        <Route path='/product/:slug_name' element={<ProductDetails />} />
       </Routes>
+      <Footer />
     </>
   )
 }
