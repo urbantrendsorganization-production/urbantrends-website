@@ -7,12 +7,15 @@ import { initLenis } from "../lenis";
 import Header from "../component/Header";
 import Card from "../component/Card";
 import ProductsCard from "../component/ProductsCard";
+import { useNavigate } from "react-router-dom";
 
 
 function Home() {
   useEffect(() => {
     initLenis();
   }, []);
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -50,11 +53,11 @@ function Home() {
 
           {/* call-to-action buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-6">
-            <button className="group relative overflow-hidden bg-gradient-to-r from-[#D9D9D9] to-[#737373] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:scale-105 shadow-md">
+            <button onClick={() => navigate('/products')} className="group relative overflow-hidden bg-gradient-to-r from-[#D9D9D9] to-[#737373] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:scale-105 shadow-md">
               <span className="relative z-10">View Products</span>
               <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
             </button>
-            <button className="group relative overflow-hidden bg-[rgba(166,166,166,0.3)] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:bg-[rgba(166,166,166,0.5)] hover:scale-105 shadow-sm backdrop-blur-md">
+            <button onClick={() => navigate('/portfolio')} className="group relative overflow-hidden bg-[rgba(166,166,166,0.3)] text-black px-8 py-3 rounded-xl font-semibold font-header transition-all hover:bg-[rgba(166,166,166,0.5)] hover:scale-105 shadow-sm backdrop-blur-md">
               <span className="relative z-10">View Portfolio</span>
             </button>
           </div>

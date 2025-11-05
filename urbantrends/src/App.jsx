@@ -12,6 +12,7 @@ import Contact from './pages/Contact'
 import About_us from './pages/About_us'
 import Services from './pages/Services'
 import ProductDetails from './pages/ProductDetails'
+import ScrollTriggerRefresh from './component/ScrollTriggerRefresh'
 
 function App() {
   useEffect(() => {
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
       <Header />
+      <ScrollTriggerRefresh />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About_us />} />

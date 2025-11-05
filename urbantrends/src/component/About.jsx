@@ -99,7 +99,7 @@ function FlipCard({ image, title, description, bgColor = "bg-white", delay = 0, 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.2 }}
-              className="mt-6 sm:mt-8 px-5 sm:px-6 py-2.5 text-white font-semibold rounded-full shadow-lg hover:opacity-90 text-sm sm:text-base"
+              className="mt-6 sm:mt-8 px-5 sm:px-6 py-2.5 border-2 border-white text-white font-semibold rounded-full shadow-lg hover:opacity-90 text-sm sm:text-base"
             >
               {cta}
             </motion.button>
