@@ -8,14 +8,15 @@ import productRoutes from './src/Routes/ProductsRoutes.js'
 import productTiers from './src/Routes/productTiers.js';
 import OrderRoutes from './src/Routes/OrderRoutes.js';
 import userRoutes from './src/Routes/UserRoutes.js';
+import developerRoutes from './src/Routes/developerRoutes.js'
+import projectsRoutes from './src/Routes/projectRoutes.js'
 import cors from 'cors';
 
 dotenv.config();
 
-
 // init express
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 const anotherMessage = `hello there from the urbantrends backend`
 
 const allowedOrigins = [
@@ -53,6 +54,8 @@ app.use('/products', productRoutes);
 app.use('/tiers-products', productTiers);
 app.use('/orders', OrderRoutes);
 app.use('/users', userRoutes);
+app.use('/devs', developerRoutes);
+app.use('/projects', projectsRoutes);
 
 
 // start server

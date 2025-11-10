@@ -35,3 +35,5 @@ export const syncUser = async (req, res) => {
         res.status(500).json({message: "internal server error", error: error.message})
     }
 };
+
+// get all users
