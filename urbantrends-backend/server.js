@@ -22,6 +22,7 @@ const anotherMessage = `hello there from the urbantrends backend`
 const allowedOrigins = [
     "http://localhost:5173",
     "https://www.urbantrends.dev",
+    "https://developers.urbantrends.dev"
 ]
 
 
