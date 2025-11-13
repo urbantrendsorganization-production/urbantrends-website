@@ -156,7 +156,7 @@ export default function About() {
           <FlipCard
             image={devs}
             title="Developers"
-            description={`UrbanTrends empowers developers to work smarter — with tools, projects, and collaborations built for real-world growth.\n\n🚀 Build faster\n🤝 Collaborate better\n💡 Learn AI tools\n⚙️ Use deploy-ready templates`}
+            description={`UrbanTrends empowers developers to work smarter — with tools, projects, and collaborations built for real-world growth.\n\n Build faster\n Collaborate better\n Learn AI tools\n Use deploy-ready templates`}
             cta="Join the Movement"
           />
 
