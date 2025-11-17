@@ -14,6 +14,7 @@ import Services from './pages/Services'
 import ProductDetails from './pages/ProductDetails'
 import ScrollTriggerRefresh from './component/ScrollTriggerRefresh'
 import Order from './pages/Order'
+import Terms from './pages/Terms'
 
 function App() {
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
         <Route path='/services/:slug' element={<Services />} />
         <Route path='/product/:slug_name' element={<ProductDetails />} />
         <Route path='/order' element={ <Order /> }/>
+        <Route path='/terms' element={ <Terms/> }/>
       </Routes>
       <Footer />
     </>
