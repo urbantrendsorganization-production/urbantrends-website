@@ -5,15 +5,18 @@ import { addMiniminalService, deleteMinimalService, getMinimalServiceById, getMi
 
 
 const router = express.Router();
-const db = await connectDb();
+const db = await connectDb()
 
 // routes
 router.post('/add-ser',  addMiniminalService);
-router.get('/services', cacheMiddleware('services', 300), async (req, res) => {
-    const [services] = await db.query('SELECT * FROM services');
+router.get('/services', cacheMiddleware('minimal_services', 300), async (req, res) => {
+    const [services] = await db.query('SELECT * FROM urbantrends_showcase');
     res.json(services);
 });
-router.get('/service/:id', getMinimalServiceById);
+router.get('/service/:id', cacheMiddleware('minimal_service', 300), async (req, res) => {
+    const [service] = await db.query('SELECT * FROM urbantrends_showcase WHERE id = ?', [req.params.id]);
+    res.json(service);
+});
 router.put('/services/:id', updateServiceById);
 router.delete('/service/:id', deleteMinimalService);
 
