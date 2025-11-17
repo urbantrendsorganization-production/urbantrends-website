@@ -22,7 +22,8 @@ const anotherMessage = `hello there from the urbantrends backend`
 const allowedOrigins = [
     "http://localhost:5173",
     "https://www.urbantrends.dev",
-    "https://developers.urbantrends.dev"
+    "https://developers.urbantrends.dev",
+    "http://localhost:3000"
 ]
 
 
@@ -59,7 +60,7 @@ app.use('/devs', developerRoutes);
 app.use('/projects', projectsRoutes);
 
 
-// start server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT} an now is good`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on port ${PORT} and now is good`);
 });
+ 

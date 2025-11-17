@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import logo from "../assets/urbantrends.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { ShoppingBag } from "lucide-react";
@@ -19,6 +19,7 @@ function Header() {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const backendLink = import.meta.env.VITE_MAIN_LINK;
   const [orderCount, setOrderCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -113,7 +114,7 @@ function Header() {
               </Link>
             )}
 
-            <button className="px-5 py-2 rounded-lg border border-gray-800 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-sm">
+            <button onClick={() => navigate('/order')} className="px-5 py-2 rounded-lg border border-gray-800 text-gray-900 font-medium hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-sm">
               Order Now
             </button>
 
