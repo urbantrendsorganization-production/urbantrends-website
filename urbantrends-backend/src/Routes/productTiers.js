@@ -9,12 +9,12 @@ const router = express.Router();
 router.post('/add-tier', addProductTiers);
 router.get('/product-tiers', cacheMiddleware('product_tiers', 300), async (req, res) => {
     const db = await connectDb();
-    const [tiers] = await db.query('SELECT * FROM urbantrends_product_tiers');
+    const [tiers] = await db.query('SELECT * FROM urbantrends_products_tiers');
     res.json(tiers);
 });
 router.get('/products-tiers/:products_slug', cacheMiddleware('product_tier', 300), async (req, res) => {
     const db = await connectDb();
-    const [tier] = await db.query('SELECT * FROM urbantrends_product_tiers WHERE products_slug = ?', [req.params.products_slug]);
+    const [tier] = await db.query('SELECT * FROM urbantrends_products_tiers WHERE products_slug = ?', [req.params.products_slug]);
     res.json(tier);
 });
 
