@@ -1,4 +1,4 @@
-import redis from "../redis";
+import redis from "../redis.js";
 
 export const cacheMiddleware = (key, ttl = 60) => async (req, res, next) => {
     try {
