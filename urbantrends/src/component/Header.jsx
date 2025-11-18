@@ -121,7 +121,7 @@ function Header() {
             {!isAuthenticated ? (
               <button
                 onClick={() => loginWithRedirect()}
-                className="px-5 py-2 rounded-lg bg-gray-600 text-white font-medium hover:bg-slate-700 transition-all duration-300 shadow-sm"
+                className="px-5 py-2 rounded-lg bg-gradient-to-br from-gray-600 via-slate-800 to-rose-800 text-white font-medium hover:bg-slate-700 transition-all duration-300 shadow-sm"
               >
                 Login
               </button>

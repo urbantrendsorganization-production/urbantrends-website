@@ -133,9 +133,9 @@ function Home() {
           className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.1] tracking-tight mb-8 max-w-6xl transition-all duration-1000 delay-200 ${isAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
         >
-          <span className="text-slate-900">Building Digital </span>
+          <span className="text-slate-900">Custom software,  </span>
           <span className="relative inline-block">
-            <span className="text-slate-900">Experiences</span>
+            <span className="text-slate-900">intelligent automation, </span>
             <svg
               className="absolute -bottom-2 left-0 w-full hidden sm:block"
               height="12"
@@ -159,9 +159,9 @@ function Home() {
 
           </span>
           <br />
-          <span className="text-slate-900">That </span>
+          <span className="text-slate-900">& </span>
           <span className="bg-gradient-to-r from-gray-600 via-gray-900 to-pink-600 bg-clip-text text-transparent">
-            Drive Growth
+            digital transformation solutions
           </span>
         </h1>
 
@@ -170,8 +170,7 @@ function Home() {
           className={`text-lg sm:text-xl md:text-2xl text-slate-600 max-w-4xl mx-auto px-4 leading-relaxed mb-10 transition-all duration-1000 delay-400 ${isAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
         >
-          At UrbanTrends, we design and develop high-performance websites, apps, and tools that help businesses scale, connect, and thrive in the digital era.
-        </p>
+          UrbanTrends is your tech partner — designing and delivering advanced digital products that connect systems, fuel innovation, and unlock new revenue opportunities.        </p>
 
         {/* Stats Pills */}
         <div
