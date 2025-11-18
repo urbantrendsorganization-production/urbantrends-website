@@ -8,14 +8,17 @@ const successMsg = `all system are good sir`
 async function connectDb() {
  
     try {
-        const connection = await mysql.createConnection({
+        const pool = mysql.createPool({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME
-        });
+            database: process.env.DB_NAME,
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        })
         console.log(`Database connected successfully. ${successMsg}`);
-        return connection;
+        return pool;
     } catch (error) {
         console.log('Database connection failed:', error);
         process.exit(1);
