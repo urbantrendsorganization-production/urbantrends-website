@@ -1,78 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Filter } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import axios from 'axios'
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 
-
-
-
-const projects = [
-  {
-    id: '1',
-    title: 'Enterprise Dashboard Platform',
-    description: 'A comprehensive analytics dashboard for real-time business intelligence',
-    industry: 'Finance',
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['React', 'TypeScript', 'Analytics'],
-    link: '#',
-  },
-  {
-    id: '2',
-    title: 'Mobile Banking App',
-    description: 'Secure and intuitive mobile banking solution with biometric authentication',
-    industry: 'Finance',
-    image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['Mobile', 'Security', 'FinTech'],
-    link: '#',
-  },
-  {
-    id: '3',
-    title: 'E-Commerce Platform',
-    description: 'Scalable marketplace with AI-powered recommendations and payment integration',
-    industry: 'E-Commerce',
-    image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['Next.js', 'AI', 'Stripe'],
-    link: '#',
-  },
-  {
-    id: '4',
-    title: 'Healthcare Management System',
-    description: 'HIPAA-compliant patient management and telemedicine platform',
-    industry: 'Healthcare',
-    image: 'https://images.unsplash.com/photo-1713463374257-16790466d9af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwYWJzdHJhY3QlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2Mzk1OTMzMnww&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['Healthcare', 'Security', 'Cloud'],
-    link: '#',
-  },
-  {
-    id: '5',
-    title: 'Supply Chain Optimizer',
-    description: 'AI-driven logistics and inventory management solution',
-    industry: 'Logistics',
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['Machine Learning', 'IoT', 'Analytics'],
-    link: '#',
-  },
-  {
-    id: '6',
-    title: 'Social Media Platform',
-    description: 'Real-time social networking app with video streaming capabilities',
-    industry: 'Social Media',
-    image: 'https://images.unsplash.com/photo-1728933102332-a4f1a281a621?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwdGVhbSUyMGNvbGxhYm9yYXRpb258ZW58MXx8fHwxNzY0MDY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    tags: ['WebRTC', 'Real-time', 'Video'],
-    link: '#',
-  },
-];
 
 const industries = ['All', 'Finance', 'E-Commerce', 'Healthcare', 'Logistics', 'Social Media'];
 
 export default function Projects() {
   const [selectedIndustry, setSelectedIndustry] = useState('All');
+  const [projectso, setProjects] = useState([]);
 
-  const filteredProjects = selectedIndustry === 'All'
-    ? projects
-    : projects.filter((project) => project.industry === selectedIndustry);
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('https://urbantrends-backend-production-fde8.up.railway.app/projects/projs');
+      setProjects(response.data)
+      console.log("fetched projects", response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect( () => {
+    fetchProjects()
+  }, [])
 
   return (
     <div className="min-h-screen bg-black">
@@ -128,7 +81,7 @@ export default function Projects() {
       <section className="py-16 mt-45">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, index) => (
+            {projectso.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}

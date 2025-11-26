@@ -1,80 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import axios from 'axios'
 
 
-
-
-const posts = [
-  {
-    id: '1',
-    title: 'The Future of AI in Software Development',
-    excerpt: 'Exploring how artificial intelligence is revolutionizing the way we build and deploy software applications.',
-    author: 'Sarah Chen',
-    date: 'Nov 20, 2024',
-    readTime: '8 min read',
-    category: 'AI & ML',
-    image: 'https://images.unsplash.com/photo-1713463374257-16790466d9af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwYWJzdHJhY3QlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2Mzk1OTMzMnww&ixlib=rb-4.1.0&q=80&w=1080',
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Building Scalable Microservices Architecture',
-    excerpt: 'A comprehensive guide to designing and implementing microservices that scale with your business.',
-    author: 'Michael Rodriguez',
-    date: 'Nov 18, 2024',
-    readTime: '12 min read',
-    category: 'Architecture',
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: '3',
-    title: 'Security Best Practices for Modern Web Apps',
-    excerpt: 'Essential security measures every developer should implement to protect user data and prevent breaches.',
-    author: 'Emily Watson',
-    date: 'Nov 15, 2024',
-    readTime: '10 min read',
-    category: 'Security',
-    image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: '4',
-    title: 'Optimizing Database Performance at Scale',
-    excerpt: 'Learn how to tune your database queries and schema design for maximum performance and efficiency.',
-    author: 'David Kim',
-    date: 'Nov 12, 2024',
-    readTime: '15 min read',
-    category: 'Database',
-    image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: '5',
-    title: 'The Rise of Serverless Computing',
-    excerpt: 'Understanding the benefits and challenges of serverless architecture for modern applications.',
-    author: 'Sarah Chen',
-    date: 'Nov 10, 2024',
-    readTime: '7 min read',
-    category: 'Cloud',
-    image: 'https://images.unsplash.com/photo-1713463374257-16790466d9af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwYWJzdHJhY3QlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2Mzk1OTMzMnww&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: '6',
-    title: 'DevOps Best Practices for 2024',
-    excerpt: 'Modern DevOps strategies to streamline your development workflow and improve deployment speed.',
-    author: 'Michael Rodriguez',
-    date: 'Nov 8, 2024',
-    readTime: '9 min read',
-    category: 'DevOps',
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-];
 
 export default function Blog() {
-  const featuredPost = posts.find((post) => post.featured);
-  const regularPosts = posts.filter((post) => !post.featured);
+  const [fetchedBlogs, setFetchedBlogs] = useState([])
+  const featuredPost = fetchedBlogs.find((post) => post.featured);
+
+  const fetchBlogPosts = async () => {
+  try {
+    const response = await axios.get(
+      'https://urbantrends-backend-production-fde8.up.railway.app/blogs/blo'
+    );
+    setFetchedBlogs(response.data);
+    console.log('fetched blogs', response.data)
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+  }
+};
+
+useEffect(() => {
+  fetchBlogPosts();
+}, []);
 
   return (
     <div className="min-h-screen bg-black">
@@ -157,7 +109,7 @@ export default function Blog() {
       <section className="py-16">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regularPosts.map((post, index) => (
+            {fetchedBlogs.map((post, index) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}

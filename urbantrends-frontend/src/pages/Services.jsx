@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import { Code, Layout, Database, Search, Wrench, Rocket, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import axios from 'axios';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { useEffect, useState } from 'react';
 
 
 export default function Services() {
+
+  const [mainServices, setMainServices] = useState([])
 
     const services = [
   {
@@ -93,6 +97,19 @@ export default function Services() {
   },
 ];
 
+const fetchServices = async () => {
+  try {
+    const response = await axios.get('https://urbantrends-backend-production-fde8.up.railway.app/services/sers');
+    setMainServices(response.data)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+useEffect( () => {
+  fetchServices()
+}, [])
+
   
 
   return (
@@ -119,7 +136,7 @@ export default function Services() {
       <section className="py-16">
         <div className="w=full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
+            {mainServices.map((service, index) => (
               <motion.div
                 key={service.id}
                 initial={{ opacity: 0, y: 20 }}

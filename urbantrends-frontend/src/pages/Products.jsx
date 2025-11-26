@@ -1,105 +1,29 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import axios from 'axios';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 
-
-
-
-
-const products = [
-  {
-    id: 'prod-1',
-    name: 'DataFlow Pro',
-    description: 'Advanced data analytics and visualization platform for businesses',
-    price: 299,
-    features: [
-      'Real-time analytics',
-      'Custom dashboards',
-      'API integration',
-      '24/7 support',
-      'Unlimited users',
-    ],
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    popular: true,
-  },
-  {
-    id: 'prod-2',
-    name: 'SecureVault',
-    description: 'Enterprise-grade password manager with encryption',
-    price: 149,
-    features: [
-      'AES-256 encryption',
-      'Team sharing',
-      'Biometric access',
-      'Audit logs',
-      'Cross-platform sync',
-    ],
-    image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: 'prod-3',
-    name: 'CloudSync Suite',
-    description: 'Seamless file synchronization and collaboration tools',
-    price: 199,
-    features: [
-      '10TB storage',
-      'Version control',
-      'Team collaboration',
-      'Mobile apps',
-      'Advanced sharing',
-    ],
-    image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: 'prod-4',
-    name: 'DevOps Commander',
-    description: 'Complete CI/CD pipeline automation and monitoring',
-    price: 399,
-    features: [
-      'Auto-deployment',
-      'Container orchestration',
-      'Performance monitoring',
-      'Log aggregation',
-      'Slack integration',
-    ],
-    image: 'https://images.unsplash.com/photo-1713463374257-16790466d9af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwYWJzdHJhY3QlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2Mzk1OTMzMnww&ixlib=rb-4.1.0&q=80&w=1080',
-    popular: true,
-  },
-  {
-    id: 'prod-5',
-    name: 'AI Assistant Pro',
-    description: 'Intelligent automation for business workflows',
-    price: 249,
-    features: [
-      'Natural language processing',
-      'Custom workflows',
-      'Integration hub',
-      'Smart scheduling',
-      'Predictive analytics',
-    ],
-    image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    id: 'prod-6',
-    name: 'API Gateway',
-    description: 'Secure and scalable API management platform',
-    price: 349,
-    features: [
-      'Rate limiting',
-      'API versioning',
-      'Analytics dashboard',
-      'Developer portal',
-      'Load balancing',
-    ],
-    image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-];
+  
 
 export default function Products() {
+  const [fetchedProducts, setFetchedProducts] = useState([]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('https://urbantrends-backend-production-fde8.up.railway.app/products/prods')
+      setFetchedProducts(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
 
   return (
     <div className="min-h-screen bg-black">
@@ -127,7 +51,7 @@ export default function Products() {
       <section className="py-16">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product, index) => (
+            {fetchedProducts.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}

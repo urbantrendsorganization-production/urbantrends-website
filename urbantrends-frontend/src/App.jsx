@@ -10,12 +10,16 @@ import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import { Toaster } from 'sonner'
 import { Footer } from './components/Footer'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import CheckOut from './pages/CheckOut'
 // import { Home } from 'lucide-react'
 
 function App() {
   return (
     <>
+      <Analytics />
+      <SpeedInsights />
       <Header />
       <Routes>
         <Route path='/' element={ <Home /> }/>
