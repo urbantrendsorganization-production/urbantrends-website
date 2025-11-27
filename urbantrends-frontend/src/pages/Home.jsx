@@ -4,10 +4,14 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Code, Cpu, Database, Shield, Zap, TrendingUp, ExternalLink, ShoppingCart, Check, Wrench, Layout, Search, Calendar, Clock, Star } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { Button } from '@/components/ui/button';
-import { Toaster } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import { Separator } from '@/components/ui/separator';
+import { useCart } from '@/components/context/CartContext';
+
 
 function Home() {
+
+  const { addToCart } = useCart()
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -167,6 +171,16 @@ function Home() {
     },
   ];
 
+  const handleAddToCart = (product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      type: 'product',
+    });
+    toast.success(`${product.name} added to cart`);
+  };
 
     return (
         <div className='h-full'>

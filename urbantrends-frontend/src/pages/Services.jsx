@@ -4,98 +4,14 @@ import { Button } from '../components/ui/button';
 import axios from 'axios';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { useEffect, useState } from 'react';
+import { useCart } from '@/components/context/CartContext';
+import { toast } from 'sonner';
 
 
 export default function Services() {
 
   const [mainServices, setMainServices] = useState([])
-
-    const services = [
-  {
-    id: 'service-1',
-    icon: Code,
-    title: 'Custom Web Development',
-    description: 'Build scalable, high-performance web applications tailored to your business needs',
-    features: [
-      'Full-stack development',
-      'Responsive design',
-      'Modern frameworks (React, Next.js)',
-      'Progressive Web Apps',
-    ],
-    price: 5000,
-    priceLabel: 'Starting at',
-  },
-  {
-    id: 'service-2',
-    icon: Layout,
-    title: 'Dashboard Development',
-    description: 'Create intuitive, data-driven dashboards for real-time insights',
-    features: [
-      'Custom analytics',
-      'Interactive visualizations',
-      'Real-time data updates',
-      'Role-based access',
-    ],
-    price: 3500,
-    priceLabel: 'Starting at',
-  },
-  {
-    id: 'service-3',
-    icon: Database,
-    title: 'Database Design',
-    description: 'Design and optimize databases for performance and scalability',
-    features: [
-      'Schema design',
-      'Query optimization',
-      'Migration services',
-      'Backup solutions',
-    ],
-    price: 2500,
-    priceLabel: 'Starting at',
-  },
-  {
-    id: 'service-4',
-    icon: Search,
-    title: 'SEO Optimization',
-    description: 'Improve your search rankings and drive organic traffic',
-    features: [
-      'Technical SEO audit',
-      'On-page optimization',
-      'Content strategy',
-      'Performance monitoring',
-    ],
-    price: 1500,
-    priceLabel: 'Monthly',
-  },
-  {
-    id: 'service-5',
-    icon: Wrench,
-    title: 'Maintenance & Support',
-    description: '24/7 monitoring, updates, and technical support for your applications',
-    features: [
-      'Proactive monitoring',
-      'Security updates',
-      'Bug fixes',
-      'Performance optimization',
-    ],
-    price: 999,
-    priceLabel: 'Monthly',
-  },
-  {
-    id: 'service-6',
-    icon: Rocket,
-    title: 'API Development',
-    description: 'Build robust and scalable APIs for seamless integrations',
-    features: [
-      'RESTful APIs',
-      'GraphQL',
-      'API documentation',
-      'Rate limiting & security',
-    ],
-    price: 4000,
-    priceLabel: 'Starting at',
-  },
-];
+  const { addToCart } = useCart();
 
 const fetchServices = async () => {
   try {
@@ -109,6 +25,18 @@ const fetchServices = async () => {
 useEffect( () => {
   fetchServices()
 }, [])
+
+const handleOrderService = (service) => {
+    addToCart({
+      id: service.id,
+      name: service.title,
+      price: service.price,
+      image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
+      type: 'service',
+    });
+    toast.success(`${service.title} added to cart!`);
+  };
+
 
   
 

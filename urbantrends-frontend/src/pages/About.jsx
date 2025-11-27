@@ -31,22 +31,22 @@ export default function About() {
     {
       name: 'Sarah Chen',
       role: 'CEO & Founder',
-      image: 'https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://i.pinimg.com/1200x/7a/8a/07/7a8a07041b38d80f4e68ece9274640e3.jpg',
     },
     {
       name: 'Michael Rodriguez',
       role: 'CTO',
-      image: 'https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://i.pinimg.com/1200x/ac/ff/6e/acff6e6b122870db3fc6b7cb118f2e7d.jpg',
     },
     {
       name: 'Emily Watson',
       role: 'Head of Design',
-      image: 'https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://i.pinimg.com/1200x/8f/47/8c/8f478cdd6e36de0f95457cb5857a2a5c.jpg',
     },
     {
       name: 'David Kim',
       role: 'Lead Developer',
-      image: 'https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://i.pinimg.com/736x/36/1e/fc/361efc2732a3a393cd4aab26b23c1578.jpg',
     },
   ];
 
@@ -55,7 +55,7 @@ export default function About() {
       quote: "UrbanTrends transformed our business with their innovative solutions. The team's expertise and dedication are unmatched.",
       author: 'Jennifer Martinez',
       role: 'CEO, TechCorp',
-      image: 'https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://i.pinimg.com/1200x/7a/8a/07/7a8a07041b38d80f4e68ece9274640e3.jpg',
     },
     {
       quote: 'Working with UrbanTrends was seamless. They delivered beyond our expectations and on time.',
