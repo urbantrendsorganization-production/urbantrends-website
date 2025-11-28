@@ -106,12 +106,14 @@ export function Footer() {
                 { label: 'Products', path: '/products' },
                 { label: 'Services', path: '/services' },
                 { label: 'About Us', path: '/about' },
+                { label: 'Urbantrends developers', path: 'https://developers.urbantrends.dev'}
               ].map((link) => (
                 <li key={link.path}>
                   <Link to={link.path} className="text-dim-grey hover:text-silver transition-colors text-sm">
                     {link.label}
                   </Link>
                 </li>
+                
               ))}
             </ul>
           </div>
