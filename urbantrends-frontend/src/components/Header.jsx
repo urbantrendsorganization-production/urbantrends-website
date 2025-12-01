@@ -6,12 +6,15 @@ import { Button } from './ui/button';
 import React from 'react';
 import logo from '/urbantrends.svg'
 import { useCart } from './context/CartContext';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { getTotalItems } = useCart();
+  const { isAuthenticated, loginWithRedirect, logout, user, isLoading } = useAuth0()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,9 +24,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const goToLogin = () => {
-  window.location.href = "https://urbantrends-backend-production-fde8.up.railway.app/login";
-};
+  
 
 
   const navItems = [
@@ -72,15 +73,32 @@ export function Header() {
 
           {/* Cart & Mobile Menu Button */}
           <div className="flex items-center gap-4">
-            <Link>
-              <Button
-                onClick={goToLogin}
-                variant="ghost"
-                className="relative text-silver px-6 py-3 text-lg rounded-xl"
-              >
-                Login
-              </Button>
-            </Link>
+            {isLoading ? (
+  <Button variant="ghost" className="text-silver px-6 py-3 text-lg rounded-xl">
+    Loading...
+  </Button>
+) : isAuthenticated ? (
+  <div className="flex items-center gap-2">
+    <span className="text-silver">Hi, {user.name}</span>
+    <Button
+      onClick={() => logout({logoutParams: {returnTo: window.location.origin}})}
+      variant="ghost"
+      className="text-silver px-4 py-2 rounded-lg"
+    >
+      Logout
+    </Button>
+  </div>
+) : (
+  <Button
+    onClick={() => loginWithRedirect()}
+    variant="ghost"
+    className="relative text-silver px-6 py-3 text-lg rounded-xl"
+  >
+    Login
+  </Button>
+)}
+
+
 
 
             <Link to="/checkout" className="relative">

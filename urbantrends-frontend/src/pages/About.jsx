@@ -73,9 +73,7 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-black">
-        <br />
-        <br />
-        <br />
+  
       {/* Header */}
       <section className="py-20 bg-gradient-to-b from-gunmetal/50 to-black">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">

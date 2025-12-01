@@ -30,8 +30,7 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-black">
-        <br />
-        <br />
+
       {/* Header */}
       <section className="py-20 bg-gradient-to-b from-gunmetal/50 to-black">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,8 +50,8 @@ useEffect(() => {
 
       {/* Featured Post */}
       {featuredPost && (
-        <section className="py-16">
-          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="">
+          <div className="w-full mx-auto sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
