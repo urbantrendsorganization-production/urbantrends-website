@@ -145,9 +145,7 @@ export function Login() {
             <Card className="bg-gunmetal/20 border-dim-grey/30 p-8 backdrop-blur-lg">
               {/* Mobile Branding */}
               <Link to="/" className="flex items-center gap-3 mb-6 lg:hidden group">
-                <div className="bg-gradient-to-br from-silver to-dim-grey p-2 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                  <Zap className="w-6 h-6 text-black" />
-                </div>
+                <img src="/urbantrends.svg" alt="" className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
                 <span className="text-xl text-silver tracking-tight">
                   Urban<span className="text-silver">Trends</span>
                 </span>
