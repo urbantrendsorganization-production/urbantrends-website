@@ -6,16 +6,24 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
 
   const addToCart = (item) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prev, { ...item, quantity: 1 }];
-    });
-  };
+  if (!item.service?.id) {
+    console.error("Service ID is missing for item:", item);
+    return; // prevent adding items without a valid service ID
+  }
+
+  setItems((prev) => {
+    const existing = prev.find((i) => i.service.id === item.service.id);
+    if (existing) {
+      return prev.map((i) =>
+        i.service.id === item.service.id
+          ? { ...i, quantity: i.quantity + 1 }
+          : i
+      );
+    }
+    return [...prev, { ...item, quantity: 1 }];
+  });
+};
+
 
   const removeFromCart = (id) => {
     setItems((prev) => prev.filter((item) => item.id !== id));

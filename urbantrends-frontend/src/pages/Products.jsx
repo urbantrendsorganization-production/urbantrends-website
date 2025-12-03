@@ -4,12 +4,10 @@ import { ShoppingCart, Check } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import axios from 'axios';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { useCart } from '@/components/context/CartContext';
 import { toast } from 'sonner';
 
 export default function Products() {
   const [fetchedProducts, setFetchedProducts] = useState([]);
-  const { addToCart } = useCart(); // FIXED: Correct function name
 
   const fetchProducts = async () => {
     try {
@@ -18,7 +16,8 @@ export default function Products() {
       );
       setFetchedProducts(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error('Failed to fetch products');
     }
   };
 
@@ -26,23 +25,41 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (product) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      type: 'product',
-    });
+  const handleOrderProduct = async (product) => {
+    try {
+      // Replace customer info with your actual frontend form/user input if needed
+      const payload = {
+        productId: product._id || product.id,
+        customer: {
+          name: 'Edwin Wamuyu',
+          email: 'Muchemiedwin68@gmail.com',
+          phone: '0748016528',
+        },
+        quantity: 1,
+        notes: '',
+      };
 
-    toast.success(`${product.name} added to cart`);
+      const response = await axios.post(
+        'https://urbantrends-backend-production-fde8.up.railway.app/products/order/create',
+        payload
+      );
+
+      if (response.status === 201 || response.data?.message) {
+        toast.success(`${product.name} order created successfully`);
+      } else {
+        toast.error('Failed to create order');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Server error: Could not create order');
+    }
   };
 
   return (
     <div className="min-h-screen bg-black">
-      
-      {/* Header */}
-      <section className="py-15 bg-gradient-to-b from-gunmetal/50 to-black">
+
+      {/* header */}
+       <section className="py-15 bg-gradient-to-b from-gunmetal/50 to-black">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -60,12 +77,12 @@ export default function Products() {
       </section>
 
       {/* Products Grid */}
-      <section className="">
+      <section className="py-10">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {fetchedProducts.map((product, index) => (
               <motion.div
-                key={product.id}
+                key={product._id || index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -79,11 +96,7 @@ export default function Products() {
                   </div>
                 )}
 
-                <div
-                  className={`bg-gunmetal/20 border rounded-xl overflow-hidden hover:border-silver/50 transition-all duration-300 h-full flex flex-col ${
-                    product.popular ? 'border-silver/30' : 'border-dim-grey/30'
-                  }`}
-                >
+                <div className={`bg-gunmetal/20 border rounded-xl overflow-hidden hover:border-silver/50 transition-all duration-300 h-full flex flex-col`}>
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <ImageWithFallback
@@ -118,14 +131,12 @@ export default function Products() {
                         </div>
                       </div>
 
-                      <br />
-
                       <Button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={() => handleOrderProduct(product)}
                         className="w-full bg-silver text-black hover:bg-silver/90 group/btn"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                        Add to Cart
+                        Order Product
                       </Button>
                     </div>
                   </div>
@@ -134,27 +145,6 @@ export default function Products() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 bg-gradient-to-b from-black to-gunmetal/30">
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-silver mb-4">Need a Custom Solution?</h2>
-            <p className="text-dim-grey text-lg mb-8">
-              We can build tailored software specifically for your business needs
-            </p>
-            <Button size="lg" className="bg-silver text-black hover:bg-silver/90">
-              Contact Sales
-            </Button>
-          </motion.div>
-        </div>
-        <br />
       </section>
     </div>
   );

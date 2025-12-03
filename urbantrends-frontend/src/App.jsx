@@ -15,6 +15,9 @@ import Projects from './pages/Projects'
 import Contact from './pages/Contact'
 import CheckOut from './pages/CheckOut'
 import AdminDashboard from './pages/AdminDashboard'
+import { ClientDashboard } from './pages/ClientDashboard'
+import { DeveloperDashboard } from './pages/DeveloperDashboard'
+import { Login } from './pages/Login'
 
 // Public layout
 function PublicLayout({ children }) {
@@ -103,7 +106,9 @@ function App() {
 
         {/* Admin route WITHOUT header/footer */}
         <Route path="/admin" element={<AdminDashboard />} />
-
+        <Route path='/client' element={<ClientDashboard />}/>
+        <Route path='/developer' element={<DeveloperDashboard />}/>
+        <Route path='/login' element={<Login />}/>
       </Routes>
 
       <Toaster position="top-right" theme="dark" />
