@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -17,7 +17,15 @@ import {
   Calendar,
   DollarSign,
   Package,
+  Axis3D,
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
@@ -34,9 +42,95 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import axios from 'axios';
+import { toast } from 'sonner';
+import ClientProjects from '@/components/ClientProjects';
 
 export function ClientDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const email = localStorage.getItem('userEmail');
+  const picture = localStorage.getItem('userPicture');
+  const [recentOrders, setRecentOrders] = useState([])
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+const [selectedProjectId, setSelectedProjectId] = useState("");
+const [requestEmail, setRequestEmail] = useState(email || "");
+
+  const handleRequestClick = (projectId) => {
+  setSelectedProjectId(projectId);
+};
+
+  // Fetch orders from two endpoints
+useEffect(() => {
+  if (!email) return;
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+
+      const [userOrdersRes, productOrdersRes] = await Promise.all([
+        axios.get(`https://urbantrends-backend-production-fde8.up.railway.app/api/email/${email}`),
+        axios.get(`https://urbantrends-backend-production-fde8.up.railway.app/products/prods-order/${email}`)
+      ]);
+
+      const userOrders = userOrdersRes.data.orders || [];
+      const productOrders = productOrdersRes.data.data || [];
+
+      const combinedOrders = [...userOrders, ...productOrders].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setRecentOrders(combinedOrders);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchOrders();
+}, [email]);
+
+// Fetch projects the user has access to
+useEffect(() => {
+  if (!email) return;
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(`https://urbantrends-backend-production-fde8.up.railway.app/dev/projects-access/${email}`);
+      setProjects(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching projects:", err);
+    }
+  };
+
+  fetchProjects();
+}, [email]);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!selectedProjectId || !requestEmail) return;
+
+  try {
+    setLoading(true);
+    const response = await axios.post(
+      "https://urbantrends-backend-production-fde8.up.railway.app/dev/project-access",
+      { projectId: selectedProjectId, email: requestEmail },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    console.log("Access requested:", response.data);
+    toast.success("Access requested successfully!");
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error("Error requesting access:", error.response?.data || error.message);
+    toast.error(`Failed to request access: ${error.response?.data?.error || "Unknown error"}`);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const stats = [
     {
@@ -69,59 +163,7 @@ export function ClientDashboard() {
     },
   ];
 
-  const projects = [
-    {
-      id: '1',
-      name: 'E-Commerce Platform',
-      status: 'In Progress',
-      progress: 65,
-      dueDate: 'Dec 15, 2024',
-      budget: '$15,000',
-      image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      id: '2',
-      name: 'Mobile App Development',
-      status: 'In Progress',
-      progress: 40,
-      dueDate: 'Jan 20, 2025',
-      budget: '$25,000',
-      image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      id: '3',
-      name: 'Dashboard Analytics',
-      status: 'Completed',
-      progress: 100,
-      dueDate: 'Nov 30, 2024',
-      budget: '$8,000',
-      image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-  ];
-
-  const recentOrders = [
-    {
-      id: 'ORD-001',
-      product: 'DataFlow Pro',
-      date: 'Nov 28, 2024',
-      amount: '$299',
-      status: 'Delivered',
-    },
-    {
-      id: 'ORD-002',
-      product: 'SecureVault',
-      date: 'Nov 25, 2024',
-      amount: '$149',
-      status: 'Delivered',
-    },
-    {
-      id: 'ORD-003',
-      product: 'DevOps Commander',
-      date: 'Nov 20, 2024',
-      amount: '$399',
-      status: 'Processing',
-    },
-  ];
+  
 
   const invoices = [
     {
@@ -209,11 +251,11 @@ export function ClientDashboard() {
             </Button>
             <div className="flex items-center gap-3 pl-4 border-l border-gunmetal">
               <div className="text-right hidden sm:block">
-                <div className="text-sm text-silver">John Doe</div>
+                <div className="text-sm text-silver">{email}</div>
                 <div className="text-xs text-dim-grey">Client</div>
               </div>
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080"
+                src={picture}
                 alt="Profile"
                 className="w-10 h-10 rounded-full object-cover border-2 border-gunmetal"
               />
@@ -363,24 +405,42 @@ export function ClientDashboard() {
                     </Button>
                   </div>
                   <div className="space-y-4">
-                    {recentOrders.map((order) => (
-                      <div
-                        key={order.id}
-                        className="flex items-center justify-between p-4 rounded-lg bg-black/30 border border-gunmetal hover:border-dim-grey transition-colors"
-                      >
-                        <div className="flex-1">
-                          <div className="text-silver text-sm mb-1">{order.product}</div>
-                          <div className="text-xs text-dim-grey">{order.date}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-silver text-sm mb-1">{order.amount}</div>
-                          <Badge className={getStatusColor(order.status)}>
-                            {order.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+  {recentOrders.map((order, index) => {
+    const orderId = order._id || order.id || index;
+
+    // if product is an object, get its name
+    const productName =
+      typeof order.product === 'object' && order.product !== null
+        ? order.product.name
+        : order.product || 'N/A';
+
+    const orderDate = order.date
+      ? new Date(order.date).toLocaleDateString()
+      : 'N/A';
+    
+    const amount = order.amount ? `$${order.amount}` : 'N/A';
+
+    const status = order.status || 'Pending';
+
+    return (
+      <div
+        key={orderId}
+        className="flex items-center justify-between p-4 rounded-lg bg-black/30 border border-gunmetal hover:border-dim-grey transition-colors"
+      >
+        <div className="flex-1">
+          <div className="text-silver text-sm mb-1">{productName}</div>
+          <div className="text-xs text-dim-grey">{orderDate}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-silver text-sm mb-1">{amount}</div>
+          <Badge className={getStatusColor(status)}>{status}</Badge>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+
                 </Card>
               </motion.div>
 
@@ -434,136 +494,79 @@ export function ClientDashboard() {
           </div>
         )}
 
-        {activeTab === 'projects' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-silver">My Projects</h2>
-              <Button className="bg-silver text-black hover:bg-silver/90">
-                Request New Project
-              </Button>
-            </div>
+        {activeTab === 'projects' && <ClientProjects />}
 
-            <div className="grid grid-cols-1 gap-6">
-              {projects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                >
-                  <Card className="bg-gunmetal/20 border-dim-grey/30 p-6 hover:border-silver/30 transition-colors">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
-                        <ImageWithFallback
-                          src={project.image}
-                          alt={project.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="text-silver mb-2">{project.name}</h3>
-                            <Badge className={getStatusColor(project.status)}>
-                              {project.status}
-                            </Badge>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-dim-grey hover:text-silver"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Due Date</div>
-                            <div className="text-sm text-silver flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {project.dueDate}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Budget</div>
-                            <div className="text-sm text-silver flex items-center gap-1">
-                              <DollarSign className="w-3 h-3" />
-                              {project.budget}
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="flex items-center justify-between text-xs text-dim-grey mb-2">
-                            <span>Progress</span>
-                            <span>{project.progress}%</span>
-                          </div>
-                          <div className="h-2 bg-gunmetal rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-silver to-dim-grey transition-all duration-500"
-                              style={{ width: `${project.progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
 
+        {/* orders tab */}
         {activeTab === 'orders' && (
-          <div className="space-y-6">
-            <h2 className="text-silver">Order History</h2>
-            <Card className="bg-gunmetal/20 border-dim-grey/30 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gunmetal">
-                      <th className="text-left p-4 text-sm text-dim-grey">Order ID</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Product</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Date</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Amount</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Status</th>
-                      <th className="text-right p-4 text-sm text-dim-grey">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentOrders.map((order, index) => (
-                      <motion.tr
-                        key={order.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="border-b border-gunmetal/50 hover:bg-gunmetal/10 transition-colors"
+  <div className="space-y-6">
+      <h2 className="text-silver">Order History</h2>
+      <Card className="bg-gunmetal/20 border-dim-grey/30 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gunmetal">
+                <th className="text-left p-4 text-sm text-dim-grey">Order ID</th>
+                <th className="text-left p-4 text-sm text-dim-grey">Product</th>
+                <th className="text-left p-4 text-sm text-dim-grey">Customer</th>
+                <th className="text-left p-4 text-sm text-dim-grey">Date</th>
+                <th className="text-left p-4 text-sm text-dim-grey">Amount</th>
+                <th className="text-left p-4 text-sm text-dim-grey">Status</th>
+                <th className="text-right p-4 text-sm text-dim-grey">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.map((order, index) => {
+                const orderId = order._id || order.id || index;
+                const productName = order.product?.name || order.name || "N/A";
+                const customerName = order.customer?.name || "N/A";
+                const orderDate = order.createdAt
+                  ? new Date(order.createdAt).toLocaleDateString()
+                  : "N/A";
+                const amount = order.product?.price
+                  ? `$${order.product.price}`
+                  : order.price
+                  ? `$${order.price}`
+                  : "N/A";
+                const status = order.status || "Pending";
+
+                return (
+                  <motion.tr
+                    key={orderId}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    className="border-b border-gunmetal/50 hover:bg-gunmetal/10 transition-colors"
+                  >
+                    <td className="p-4 text-sm text-silver">{orderId}</td>
+                    <td className="p-4 text-sm text-silver">{productName}</td>
+                    <td className="p-4 text-sm text-silver">{customerName}</td>
+                    <td className="p-4 text-sm text-dim-grey">{orderDate}</td>
+                    <td className="p-4 text-sm text-silver">{amount}</td>
+                    <td className="p-4">
+                      <Badge className={getStatusColor(status)}>{status}</Badge>
+                    </td>
+                    <td className="p-4 text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-dim-grey hover:text-silver"
                       >
-                        <td className="p-4 text-sm text-silver">{order.id}</td>
-                        <td className="p-4 text-sm text-silver">{order.product}</td>
-                        <td className="p-4 text-sm text-dim-grey">{order.date}</td>
-                        <td className="p-4 text-sm text-silver">{order.amount}</td>
-                        <td className="p-4">
-                          <Badge className={getStatusColor(order.status)}>
-                            {order.status}
-                          </Badge>
-                        </td>
-                        <td className="p-4 text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-dim-grey hover:text-silver"
-                          >
-                            View Details
-                          </Button>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          </div>
-        )}
+                        View Details
+                      </Button>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+)}
+
+
+
 
         {activeTab === 'invoices' && (
           <div className="space-y-6">

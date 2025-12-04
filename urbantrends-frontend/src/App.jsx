@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
+
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Toaster } from 'sonner'
@@ -31,13 +33,23 @@ function PublicLayout({ children }) {
 }
 
 function App() {
+  const { user, isAuthenticated } = useAuth0()
+
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      localStorage.setItem("userEmail", user.email)
+      localStorage.setItem("userPicture", user.picture);
+      localStorage.setItem("userName", user.name);
+      console.log("Saved user email:", user.email)
+    }
+  }, [isAuthenticated, user])
+
   return (
     <>
       <Analytics />
       <SpeedInsights />
 
       <Routes>
-
         {/* Public routes */}
         <Route
           path="/"
@@ -104,11 +116,11 @@ function App() {
           }
         />
 
-        {/* Admin route WITHOUT header/footer */}
+        {/* Dashboard routes */}
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path='/client' element={<ClientDashboard />}/>
-        <Route path='/developer' element={<DeveloperDashboard />}/>
-        <Route path='/login' element={<Login />}/>
+        <Route path="/client" element={<ClientDashboard />} />
+        <Route path="/developer" element={<DeveloperDashboard />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
 
       <Toaster position="top-right" theme="dark" />

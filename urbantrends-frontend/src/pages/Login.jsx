@@ -25,10 +25,11 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState('client');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth0();
   const navigate = useNavigate();
+  const { isAuthenticated, user, loginWithRedirect } = useAuth0()
+
 
   const roles = [
     {
@@ -61,7 +62,7 @@ export function Login() {
     try {
       await login(email, password, selectedRole);
       toast.success('Login successful!');
-      
+
       // Navigate to appropriate dashboard
       switch (selectedRole) {
         case 'client':
@@ -79,6 +80,15 @@ export function Login() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+
+  const handleGoogleLogin = () => {
+    loginWithRedirect({
+      connection: "google-oauth2",
+      appState: { returnTo: "/client" }
+    })
+
   };
 
   return (
@@ -99,11 +109,11 @@ export function Login() {
             className="hidden lg:block"
           >
             <Link to="/" className="flex items-center mb-8 gap-x-2 group">
-  <img src="/urbantrends.svg" alt="" className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
-  <span className="text-2xl text-silver tracking-tight">
-    Urban<span className="text-silver">Trends</span>
-  </span>
-</Link>
+              <img src="/urbantrends.svg" alt="" className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-2xl text-silver tracking-tight">
+                Urban<span className="text-silver">Trends</span>
+              </span>
+            </Link>
 
 
             <h1 className="text-silver mb-4">Welcome Back</h1>
@@ -113,26 +123,26 @@ export function Login() {
             <br />
 
             <div className="space-y-4">
-  {[
-    'Access real-time analytics and insights',
-    'Manage projects and track progress',
-    'Collaborate with your team',
-    'Secure and encrypted data',
-  ].map((feature, index) => (
-    <motion.div
-      key={index}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-      className="flex items-center gap-3"
-    >
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-silver to-dim-grey flex items-center justify-center flex-shrink-0">
-        <CheckCircle2 className="w-4 h-4 text-black" />
-      </div>
-      <span className="text-dim-grey">{feature}</span>
-    </motion.div>
-  ))}
-</div>
+              {[
+                'Access real-time analytics and insights',
+                'Manage projects and track progress',
+                'Collaborate with your team',
+                'Secure and encrypted data',
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-silver to-dim-grey flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-black" />
+                  </div>
+                  <span className="text-dim-grey">{feature}</span>
+                </motion.div>
+              ))}
+            </div>
 
           </motion.div>
 
@@ -162,11 +172,10 @@ export function Login() {
                     onClick={() => setSelectedRole(role.id)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`p-4 rounded-xl border transition-all ${
-                      selectedRole === role.id
-                        ? 'border-silver bg-gradient-to-br from-silver/10 to-dim-grey/10'
-                        : 'border-dim-grey/30 hover:border-silver/50'
-                    }`}
+                    className={`p-4 rounded-xl border transition-all ${selectedRole === role.id
+                      ? 'border-silver bg-gradient-to-br from-silver/10 to-dim-grey/10'
+                      : 'border-dim-grey/30 hover:border-silver/50'
+                      }`}
                   >
                     <div
                       className={`w-10 h-10 rounded-lg bg-gradient-to-br ${role.color} flex items-center justify-center mx-auto mb-2`}
@@ -207,22 +216,46 @@ export function Login() {
 
                 <br />
 
-                
 
+                <div>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-silver text-black hover:bg-silver/90 disabled:opacity-50"
+                  >
+                    {isLoading ? (
+                      'Signing in...'
+                    ) : (
+                      <>
+                        Sign In
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                <br />
                 <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-silver text-black hover:bg-silver/90 disabled:opacity-50"
+                  type="button"
+                  onClick={() =>
+                    loginWithRedirect({
+                      connection: "google-oauth2",
+                      appState: {
+                        returnTo:
+                          selectedRole === "developer"
+                            ? "/developer"
+                            : selectedRole === "admin"
+                              ? "/admin"
+                              : "/client",
+                      },
+                    })
+                  }
+                  className="w-full bg-silver text-black hover:bg-silver/90"
                 >
-                  {isLoading ? (
-                    'Signing in...'
-                  ) : (
-                    <>
-                      Sign In
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
+                  Login with Google
                 </Button>
+
+
               </form>
 
               <div className="mt-6 text-center">

@@ -24,6 +24,8 @@ import AdminOverview from '@/components/AdminOverview';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const email = localStorage.getItem('userEmail')
+  const picture = localStorage.getItem('userPicture')
 
   return (
     <div className="min-h-screen bg-black">
@@ -62,11 +64,11 @@ export default function AdminDashboard() {
             </Button>
             <div className="flex items-center gap-3 pl-4 border-l border-gunmetal">
               <div className="text-right hidden sm:block">
-                <div className="text-sm text-silver">Admin User</div>
-                <div className="text-xs text-dim-grey">Administrator</div>
+                <div className="text-sm text-silver">{email}</div>
+                <div className="text-xs text-dim-grey">Admin</div>
               </div>
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080"
+                src={picture}
                 alt="Admin"
                 className="w-10 h-10 rounded-full object-cover border-2 border-gunmetal"
               />

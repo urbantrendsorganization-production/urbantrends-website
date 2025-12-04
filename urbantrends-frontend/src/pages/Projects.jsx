@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Filter } from "lucide-react";
+import { ExternalLink, Filter, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import axios from "axios";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -13,6 +13,10 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
+const [successMessage, setSuccessMessage] = useState("");
+const name = localStorage.getItem("userName")
 
   const fetchProjects = async () => {
     try {
@@ -53,24 +57,42 @@ export default function Projects() {
   };
 
   const handleSubmitInterest = async (e) => {
-    e.preventDefault();
-    if (!email) return alert("Please enter your email");
+  e.preventDefault();
+  if (!email) return;
 
-    try {
-      await axios.post("https://email-service-production-f8ad.up.railway.app/api/email/send", {
+  setIsSubmitting(true);
+  setSuccessMessage("");
+  setErrorMessage("");
+
+  try {
+    await axios.post(
+      "https://email-service-production-f8ad.up.railway.app/api/email/send",
+      {
         email,
-        name: "Interested User",
+        userName: ` there ${email}` ,
         subject: `Interest in project: ${selectedProject.title}`,
-        message: `User with email ${email} is interested in your project: ${selectedProject.title}.`,
-      });
-      alert("Thank you! Your interest has been submitted.");
-      setEmail("");
+        message: `Your will be communicated on how to know more about the following project`,
+        ctaText: "View Project",
+        ctaLink: `https://www.urbantrends.dev/login`,
+      }
+    );
+
+    setSuccessMessage("Thank you! Your interest has been submitted.");
+    setEmail("");
+    setTimeout(() => {
+      setSuccessMessage("");
       setShowModal(false);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to submit. Please try again.");
-    }
-  };
+    }, 1000);
+
+  } catch (err) {
+    console.error(err);
+    setErrorMessage("Failed to submit. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -87,37 +109,61 @@ export default function Projects() {
       </section>
 
       {/* Modal */}
-      {showModal && selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
-          <div className="bg-surface p-6 rounded-lg w-full max-w-md relative">
-            <button
-              className="absolute top-3 right-3 text-silver text-xl"
-              onClick={() => setShowModal(false)}
-            >
-              &times;
-            </button>
-            <h2 className="text-silver text-lg mb-4">
-              Interested in "{selectedProject.title}"?
-            </h2>
-            <br />
-            <p>Kindly input your email, to get more about this project</p>
-            <br />
-            <form onSubmit={handleSubmitInterest} className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="p-2 rounded border border-dim-grey bg-black text-silver focus:outline-none"
-                required
-              />
-              <Button type="submit" className="bg-silver text-black hover:bg-silver/90">
-                Submit
-              </Button>
-            </form>
-          </div>
+{showModal && selectedProject && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-surface p-6 rounded-lg w-full max-w-md relative">
+      <button
+        className="absolute top-3 right-3 text-silver text-xl"
+        onClick={() => setShowModal(false)}
+      >
+        &times;
+      </button>
+
+      <h2 className="text-silver text-lg mb-4">
+        Interested in "{selectedProject.title}"?
+      </h2>
+      <p className="mb-4">Kindly input your email to get more info about this project.</p>
+
+      <form onSubmit={handleSubmitInterest} className="flex flex-col gap-4">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="p-2 rounded border border-dim-grey bg-black text-silver focus:outline-none"
+          required
+          disabled={isSubmitting}
+        />
+        <Button
+          type="submit"
+          className="bg-silver text-black hover:bg-silver/90 flex items-center justify-center"
+          disabled={isSubmitting}
+        >
+          {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+          {isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
+      </form>
+
+      {/* Success and Error Messages */}
+      {successMessage && (
+        <div className="mt-4 p-3 bg-green-600 text-white rounded text-sm">
+          {successMessage}
         </div>
       )}
+      {errorMessage && (
+        <div className="mt-4 p-3 bg-red-600 text-white rounded text-sm">
+          {errorMessage}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+
+
+
+
+      
 
       {/* Projects Grid */}
       <section className="py-16 mt-45">

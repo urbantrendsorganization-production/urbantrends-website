@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -24,6 +24,7 @@ import {
   CheckCircle2,
   Clock,
   BarChart3,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -47,11 +48,114 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import axios from 'axios';
+import AddProjectModal from '@/components/AddProjectModal';
+import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { CSVLink } from 'react-csv';
+import AnalyticsTab from '@/components/AnalyticsTab';
 
 export function DeveloperDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [showAddProject, setShowAddProject] = useState(false);
+  const email = localStorage.getItem('userEmail');
+  const picture = localStorage.getItem('userPicture')
+  const [openMenuId, setOpenMenuId] = useState(null); 
+  const [saleModalOpen, setSaleModalOpen] = useState(false);
+const [selectedProject, setSelectedProject] = useState(null);
+const [salePrice, setSalePrice] = useState('');
+const [isCreatingSale, setIsCreatingSale] = useState(false);
+const [recentSales, setRecentSales] = useState([])
 
+
+
+  const [myProjects, setMyProjects] = useState([]);
+
+  const fetchDeveloperProjects = async () => {
+    try {
+      const response = await axios.get(
+        `https://urbantrends-backend-production-fde8.up.railway.app/developers/projects/${email}`
+      );
+      setMyProjects(response.data.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch projects");
+    }
+  };
+
+  useEffect(() => {
+    fetchDeveloperProjects();
+  }, []);
+
+  // create sale handler
+  const handleCreateSaleFromModal = async () => {
+  if (!salePrice || Number(salePrice) <= 0) {
+    toast.error("Price must be greater than 0");
+    return;
+  }
+
+  try {
+    setIsCreatingSale(true); // start loading
+
+    const payload = {
+      projectId: selectedProject._id,
+      price: Number(salePrice),
+      developerEmail: selectedProject.developerEmail || email,
+    };
+
+    const res = await axios.post(
+      "https://urbantrends-backend-production-fde8.up.railway.app/sale/project-sales",
+      payload,
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    toast.success("Sale created successfully!");
+    setSaleModalOpen(false);
+    setSalePrice("");
+    setSelectedProject(null);
+    fetchSalesByEmail()
+
+  } catch (err) {
+    toast.error(err.response?.data?.error || err.message);
+  } finally {
+    setIsCreatingSale(false); // stop loading
+  }
+};
+
+const fetchSalesByEmail = async () => {
+  try {
+    const response = await axios.get(
+      `https://urbantrends-backend-production-fde8.up.railway.app/sale/project-sales/by-email/${email}`
+    );
+
+    // Transform the data for the table
+    const transformed = response.data.data.map((item) => ({
+      id: item._id,
+      projectId: item.project,
+      title: item.projectTitle,
+      description: item.projectDescription,
+      developerEmail: item.developerEmail,
+      amount: item.price,
+      status: item.status,
+      date: new Date(item.createdAt).toLocaleString(),
+    }));
+
+    setRecentSales(transformed);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+useEffect(() => {
+  fetchSalesByEmail();
+}, []);
+
+
+
+
+
+  
   const stats = [
     {
       label: 'Total Projects',
@@ -87,121 +191,8 @@ export function DeveloperDashboard() {
     },
   ];
 
-  const myProjects = [
-    {
-      id: '1',
-      name: 'E-Commerce Dashboard Pro',
-      category: 'Dashboard',
-      price: 299,
-      totalSales: 45,
-      revenue: 13455,
-      rating: 4.9,
-      reviews: 32,
-      status: 'Active',
-      image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      lastSale: '2 hours ago',
-    },
-    {
-      id: '2',
-      name: 'Mobile Banking UI Kit',
-      category: 'UI Kit',
-      price: 149,
-      totalSales: 38,
-      revenue: 5662,
-      rating: 4.7,
-      reviews: 28,
-      status: 'Active',
-      image: 'https://images.unsplash.com/photo-1722850646236-61c6f917df96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwcHJvZHVjdCUyMGRldmljZXxlbnwxfHx8fDE3NjQwNjc0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-      lastSale: '5 hours ago',
-    },
-    {
-      id: '3',
-      name: 'React Admin Template',
-      category: 'Template',
-      price: 199,
-      totalSales: 32,
-      revenue: 6368,
-      rating: 4.8,
-      reviews: 24,
-      status: 'Active',
-      image: 'https://images.unsplash.com/photo-1660810731526-0720827cbd38?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwd29ya3NwYWNlfGVufDF8fHx8MTc2Mzk1OTMzM3ww&ixlib=rb-4.1.0&q=80&w=1080',
-      lastSale: '1 day ago',
-    },
-    {
-      id: '4',
-      name: 'SaaS Landing Page Kit',
-      category: 'Landing Page',
-      price: 99,
-      totalSales: 18,
-      revenue: 1782,
-      rating: 4.6,
-      reviews: 15,
-      status: 'Active',
-      image: 'https://images.unsplash.com/photo-1713463374257-16790466d9af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwYWJzdHJhY3QlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2Mzk1OTMzMnww&ixlib=rb-4.1.0&q=80&w=1080',
-      lastSale: '2 days ago',
-    },
-    {
-      id: '5',
-      name: 'Analytics Dashboard',
-      category: 'Dashboard',
-      price: 249,
-      totalSales: 15,
-      revenue: 3735,
-      rating: 4.9,
-      reviews: 12,
-      status: 'Under Review',
-      image: 'https://images.unsplash.com/photo-1758411898021-ef0dadaaa295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzYzOTc3NDk0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      lastSale: '3 days ago',
-    },
-  ];
 
-  const recentSales = [
-    {
-      id: 'SALE-001',
-      project: 'E-Commerce Dashboard Pro',
-      buyer: 'John Smith',
-      amount: 299,
-      date: 'Dec 2, 2024',
-      time: '2:34 PM',
-      status: 'Completed',
-    },
-    {
-      id: 'SALE-002',
-      project: 'Mobile Banking UI Kit',
-      buyer: 'Sarah Johnson',
-      amount: 149,
-      date: 'Dec 2, 2024',
-      time: '9:12 AM',
-      status: 'Completed',
-    },
-    {
-      id: 'SALE-003',
-      project: 'E-Commerce Dashboard Pro',
-      buyer: 'Mike Wilson',
-      amount: 299,
-      date: 'Dec 1, 2024',
-      time: '5:45 PM',
-      status: 'Completed',
-    },
-    {
-      id: 'SALE-004',
-      project: 'React Admin Template',
-      buyer: 'Emily Brown',
-      amount: 199,
-      date: 'Dec 1, 2024',
-      time: '2:18 PM',
-      status: 'Completed',
-    },
-    {
-      id: 'SALE-005',
-      project: 'SaaS Landing Page Kit',
-      buyer: 'David Lee',
-      amount: 99,
-      date: 'Nov 30, 2024',
-      time: '11:30 AM',
-      status: 'Pending',
-    },
-  ];
+ 
 
   const salesData = [
     { month: 'Jul', sales: 12, revenue: 2400 },
@@ -238,6 +229,8 @@ export function DeveloperDashboard() {
         return 'bg-gunmetal/20 text-dim-grey border-dim-grey/30';
     }
   };
+
+  
 
   return (
     <div className="min-h-screen bg-black">
@@ -276,11 +269,11 @@ export function DeveloperDashboard() {
             </Button>
             <div className="flex items-center gap-3 pl-4 border-l border-gunmetal">
               <div className="text-right hidden sm:block">
-                <div className="text-sm text-silver">Alex Developer</div>
+                <div className="text-sm text-silver">{email}</div>
                 <div className="text-xs text-dim-grey">Developer</div>
               </div>
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDA2MzY3NXww&ixlib=rb-4.1.0&q=80&w=1080"
+                src={picture}
                 alt="Developer"
                 className="w-10 h-10 rounded-full object-cover border-2 border-gunmetal"
               />
@@ -300,11 +293,10 @@ export function DeveloperDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
+                className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id
                     ? 'border-silver text-silver'
                     : 'border-transparent text-dim-grey hover:text-silver'
-                }`}
+                  }`}
               >
                 <tab.icon className="w-4 h-4" />
                 <span className="hidden sm:inline">{tab.label}</span>
@@ -332,9 +324,8 @@ export function DeveloperDashboard() {
                       <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
                         <stat.icon className="w-6 h-6 text-black" />
                       </div>
-                      <div className={`flex items-center gap-1 text-xs ${
-                        stat.trend === 'up' ? 'text-silver' : 'text-dim-grey'
-                      }`}>
+                      <div className={`flex items-center gap-1 text-xs ${stat.trend === 'up' ? 'text-silver' : 'text-dim-grey'
+                        }`}>
                         {stat.trend === 'up' ? (
                           <ArrowUpRight className="w-4 h-4" />
                         ) : (
@@ -440,7 +431,10 @@ export function DeveloperDashboard() {
                             </span>
                           </div>
                         </div>
-                        <div className="text-silver text-sm">${project.revenue.toLocaleString()}</div>
+                        <div className="text-sm text-silver">
+                          ${Number(project.revenue || 0).toLocaleString()}
+                        </div>
+
                       </div>
                     ))}
                   </div>
@@ -485,313 +479,264 @@ export function DeveloperDashboard() {
           </div>
         )}
 
-        {activeTab === 'projects' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-silver">My Projects</h2>
-              <Button className="bg-silver text-black hover:bg-silver/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Upload New Project
-              </Button>
-            </div>
+       {activeTab === 'projects' && (
+  <div className="space-y-6">
+    <div className="flex items-center justify-between">
+      <h2 className="text-silver">My Projects</h2>
 
-            <div className="grid grid-cols-1 gap-6">
-              {myProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                >
-                  <Card className="bg-gunmetal/20 border-dim-grey/30 p-6 hover:border-silver/30 transition-colors">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
-                        <ImageWithFallback
-                          src={project.image}
-                          alt={project.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="text-silver mb-2">{project.name}</h3>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge className="bg-gunmetal/50 text-dim-grey border-dim-grey/30">
-                                {project.category}
-                              </Badge>
-                              <Badge className={getStatusColor(project.status)}>
-                                {project.status}
-                              </Badge>
-                            </div>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-dim-grey hover:text-silver"
-                          >
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Price</div>
-                            <div className="text-sm text-silver">${project.price}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Total Sales</div>
-                            <div className="text-sm text-silver">{project.totalSales}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Revenue</div>
-                            <div className="text-sm text-silver">${project.revenue.toLocaleString()}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-dim-grey mb-1">Rating</div>
-                            <div className="text-sm text-silver flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-silver text-silver" />
-                              {project.rating} ({project.reviews})
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 mt-4">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-dim-grey text-dim-grey hover:bg-silver hover:text-black hover:border-silver"
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            View
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-dim-grey text-dim-grey hover:bg-silver hover:text-black hover:border-silver"
-                          >
-                            <Edit className="w-4 h-4 mr-2" />
-                            Edit
-                          </Button>
-                          <div className="ml-auto text-xs text-dim-grey">
-                            Last sale: {project.lastSale}
-                          </div>
-                        </div>
+      {/* Replace the original button with the AddProjectModal trigger */}
+      <AddProjectModal /> 
+      {/* This will render your modal button and handle form submission */}
+    </div>
+
+    <br />
+
+    <div className="grid grid-cols-1 gap-6">
+      {myProjects.length > 0 ? (
+        myProjects.map((project, index) => (
+          <motion.div
+            key={project._id || index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+          >
+            <Card className="bg-gunmetal/20 border-dim-grey/30 p-6 hover:border-silver/30 transition-colors">
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Project Image */}
+                <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
+                  <ImageWithFallback
+                    src={project.imageUrl || project.image}
+                    alt={project.title || project.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <Dialog open={saleModalOpen} onOpenChange={setSaleModalOpen}>
+  <DialogContent className="sm:max-w-md bg-black text-white">
+    <DialogHeader>
+      <DialogTitle>Create Project Sale</DialogTitle>
+      <DialogDescription>
+        Set the price for this project sale
+      </DialogDescription>
+    </DialogHeader>
+
+    <div className="space-y-4">
+      <div>
+        <Label>Project</Label>
+        <div>
+          <Input value={selectedProject?.title} disabled />
+        </div>
+      </div>
+      <br />
+
+      <div>
+        <Label>Developer Email</Label>
+        <Input value={selectedProject?.developerEmail || email} disabled />
+      </div>
+      <br />
+
+      <div>
+        <Label>Price *</Label>
+        <Input
+          type="number"
+          value={salePrice}
+          onChange={(e) => setSalePrice(e.target.value)}
+          placeholder="Enter sale price"
+          required
+        />
+      </div>
+    </div>
+
+    <DialogFooter className="flex justify-end gap-2 mt-4">
+      <Button variant="outline" className={`bg-white text-black`} onClick={() => setSaleModalOpen(false)}>Cancel</Button>
+      <DialogFooter className="flex justify-end gap-2 mt-4">
+
+  <Button
+    className="bg-silver text-black hover:bg-silver/90 flex items-center"
+    disabled={isCreatingSale}
+    onClick={handleCreateSaleFromModal}
+  >
+    {isCreatingSale && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+    {isCreatingSale ? "Creating sale..." : "Create Sale"}
+  </Button>
+</DialogFooter>
+
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
+                {/* Project Details */}
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="text-silver mb-2">{project.title || project.name}</h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge className="bg-gunmetal/50 text-dim-grey border-dim-grey/30">
+                          {project.category}
+                        </Badge>
+                        {project.status && (
+                          <Badge className={getStatusColor(project.status)}>
+                            {project.status}
+                          </Badge>
+                        )}
                       </div>
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {activeTab === 'sales' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-silver">Sales History</h2>
-              <Button
-                variant="outline"
-                className="border-dim-grey text-dim-grey hover:bg-gunmetal hover:text-silver"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export Report
-              </Button>
-            </div>
+                    {/* Three dots dropdown */}
+                    <div className="relative">
+                      <Button
+  variant="ghost"
+  className={`bg-white`}
+  size="icon"
+  onClick={() => {
+    setSelectedProject(project);
+    setSaleModalOpen(true);
+  }}
+>
+  <MoreVertical className="w-4 h-4 text-black" />
+</Button>
 
-            <Card className="bg-gunmetal/20 border-dim-grey/30 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gunmetal">
-                      <th className="text-left p-4 text-sm text-dim-grey">Sale ID</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Project</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Buyer</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Amount</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Date</th>
-                      <th className="text-left p-4 text-sm text-dim-grey">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentSales.map((sale, index) => (
-                      <motion.tr
-                        key={sale.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="border-b border-gunmetal/50 hover:bg-gunmetal/10 transition-colors"
-                      >
-                        <td className="p-4 text-sm text-silver">{sale.id}</td>
-                        <td className="p-4 text-sm text-silver">{sale.project}</td>
-                        <td className="p-4 text-sm text-dim-grey">{sale.buyer}</td>
-                        <td className="p-4 text-sm text-silver">${sale.amount}</td>
-                        <td className="p-4 text-sm text-dim-grey">{sale.date}</td>
-                        <td className="p-4">
-                          <Badge className={getStatusColor(sale.status)}>
-                            {sale.status}
-                          </Badge>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
+
+                      {openMenuId === project._id && (
+                        <div className="absolute right-0 mt-2 w-32 bg-gunmetal border border-dim-grey rounded shadow-lg z-10">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-2 w-full justify-start px-4 py-2 hover:bg-dim-grey"
+                            onClick={() => handleCreateSale(project)}
+                          >
+                            <DollarSign className="w-4 h-4" />
+                            Create Sale
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <div className="text-xs text-dim-grey mb-1">Price</div>
+                      <div className="text-sm text-silver">${project.price || 0}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-dim-grey mb-1">Total Sales</div>
+                      <div className="text-sm text-silver">{project.totalSales || 0}</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-dim-grey mb-1">Revenue</div>
+                      <div className="text-sm text-silver">
+                        ${project.revenue ? project.revenue.toLocaleString() : 0}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-dim-grey mb-1">Rating</div>
+                      <div className="text-sm text-silver flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-silver text-silver" />
+                        {project.rating || 0} ({project.reviews || 0})
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 mt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-dim-grey text-dim-grey hover:bg-silver hover:text-black hover:border-silver"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-dim-grey text-dim-grey hover:bg-silver hover:text-black hover:border-silver"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
+                    <div className="ml-auto text-xs text-dim-grey">
+                      Last sale: {project.lastSale || 'N/A'}
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
-          </div>
-        )}
+          </motion.div>
+        ))
+      ) : (
+        <div className="text-dim-grey text-center py-6">No projects found.</div>
+      )}
+    </div>
+  </div>
+)}
 
-        {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <h2 className="text-silver">Performance Analytics</h2>
 
-            {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+{/* sales */}
+
+        {activeTab === 'sales' && (
+  <div className="space-y-6">
+    <div className="flex items-center justify-between">
+      <h2 className="text-silver">Sales History</h2>
+      <CSVLink
+        data={recentSales}
+        filename={`sales-${new Date().toISOString()}.csv`}
+        className="flex items-center bg-silver border-dim-grey text-black px-3 py-1 gap-2 rounded hover:bg-gunmetal hover:text-silver"
+      >
+        <Download className="w-4 h-4 mr-2" />
+        Export Report
+      </CSVLink>
+    </div>
+
+    <Card className="bg-gunmetal/20 border-dim-grey/30 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gunmetal">
+              <th className="text-left p-4 text-sm text-dim-grey">Sale ID</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Project ID</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Title</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Description</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Developer Email</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Amount</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Date</th>
+              <th className="text-left p-4 text-sm text-dim-grey">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentSales.map((sale, index) => (
+              <motion.tr
+                key={sale.id}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="border-b border-gunmetal/50 hover:bg-gunmetal/10 transition-colors"
               >
-                <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-dim-grey text-sm">Conversion Rate</div>
-                    <TrendingUp className="w-4 h-4 text-silver" />
-                  </div>
-                  <div className="text-3xl text-silver mb-2">18.4%</div>
-                  <div className="text-xs text-dim-grey">+2.3% from last month</div>
-                </Card>
-              </motion.div>
+                <td className="p-4 text-sm text-silver">{sale.id}</td>
+                <td className="p-4 text-sm text-silver">{sale.projectId}</td>
+                <td className="p-4 text-sm text-silver">{sale.title}</td>
+                <td className="p-4 text-sm text-silver">{sale.description}</td>
+                <td className="p-4 text-sm text-silver">{sale.developerEmail}</td>
+                <td className="p-4 text-sm text-silver">${sale.amount}</td>
+                <td className="p-4 text-sm text-silver">{sale.date}</td>
+                <td className="p-4">
+                  <Badge className={getStatusColor(sale.status)}>
+                    {sale.status}
+                  </Badge>
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  </div>
+)}
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-              >
-                <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-dim-grey text-sm">Avg. Project Price</div>
-                    <DollarSign className="w-4 h-4 text-silver" />
-                  </div>
-                  <div className="text-3xl text-silver mb-2">$189</div>
-                  <div className="text-xs text-dim-grey">+5.2% from last month</div>
-                </Card>
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
-                <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-dim-grey text-sm">Total Customers</div>
-                    <Users className="w-4 h-4 text-silver" />
-                  </div>
-                  <div className="text-3xl text-silver mb-2">124</div>
-                  <div className="text-xs text-dim-grey">+15 new this month</div>
-                </Card>
-              </motion.div>
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-              >
-                <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                  <h3 className="text-silver mb-6">Project Performance</h3>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <BarChart data={projectPerformanceData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#404040" />
-                      <XAxis dataKey="week" stroke="#6D6D6D" />
-                      <YAxis stroke="#6D6D6D" />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#404040',
-                          border: '1px solid #6D6D6D',
-                          borderRadius: '8px',
-                          color: '#BCBCBC',
-                        }}
-                      />
-                      <Legend />
-                      <Bar dataKey="views" fill="#6D6D6D" radius={[8, 8, 0, 0]} />
-                      <Bar dataKey="sales" fill="#BCBCBC" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-              >
-                <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                  <h3 className="text-silver mb-6">Category Distribution</h3>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie
-                        data={categoryDistribution}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={90}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {categoryDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#404040',
-                          border: '1px solid #6D6D6D',
-                          borderRadius: '8px',
-                          color: '#BCBCBC',
-                        }}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </Card>
-              </motion.div>
-            </div>
-
-            {/* Monthly Trends */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-            >
-              <Card className="bg-gunmetal/20 border-dim-grey/30 p-6">
-                <h3 className="text-silver mb-6">Sales Trend (Last 6 Months)</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={salesData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" />
-                    <XAxis dataKey="month" stroke="#6D6D6D" />
-                    <YAxis stroke="#6D6D6D" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#404040',
-                        border: '1px solid #6D6D6D',
-                        borderRadius: '8px',
-                        color: '#BCBCBC',
-                      }}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="#BCBCBC"
-                      strokeWidth={2}
-                      dot={{ fill: '#BCBCBC', r: 4 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-            </motion.div>
-          </div>
-        )}
+        {activeTab === 'analytics' && <AnalyticsTab email={email}/>}
       </main>
     </div>
   );

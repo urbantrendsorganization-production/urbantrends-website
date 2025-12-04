@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import axios from 'axios';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { toast } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function Products() {
   const [fetchedProducts, setFetchedProducts] = useState([]);
+  const {isAuthenticated, user, loginWithPopup} = useAuth0()
+  const [isOrdering, setIsOrdering] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -26,34 +29,46 @@ export default function Products() {
   }, []);
 
   const handleOrderProduct = async (product) => {
-    try {
-      // Replace customer info with your actual frontend form/user input if needed
-      const payload = {
-        productId: product._id || product.id,
-        customer: {
-          name: 'Edwin Wamuyu',
-          email: 'Muchemiedwin68@gmail.com',
-          phone: '0748016528',
-        },
-        quantity: 1,
-        notes: '',
-      };
-
-      const response = await axios.post(
-        'https://urbantrends-backend-production-fde8.up.railway.app/products/order/create',
-        payload
-      );
-
-      if (response.status === 201 || response.data?.message) {
-        toast.success(`${product.name} order created successfully`);
-      } else {
-        toast.error('Failed to create order');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Server error: Could not create order');
+  try {
+    if (!isAuthenticated) {
+      return loginWithPopup()
     }
-  };
+
+    if (!user?.name || !user?.email) {
+      return toast.error("User info incomplete. Cannot place order.");
+    }
+
+    setIsOrdering(true);
+
+    const payload = {
+      productId: product._id || product.id,
+      customer: {
+        name: user.name,
+        email: user.email,
+        phone: '0748016528',
+      },
+      quantity: 1,
+      notes: '',
+    };
+
+    const response = await axios.post(
+      'https://urbantrends-backend-production-fde8.up.railway.app/products/order/create',
+      payload
+    );
+
+    if (response.status === 201 || response.data?.message) {
+      toast.success(`${product.name} order created successfully!`);
+    } else {
+      toast.error('Failed to create order. Please try again.');
+    }
+  } catch (error) {
+    console.error("Order error:", error);
+    toast.error('Server error: Could not create order.');
+  } finally {
+    setIsOrdering(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -132,12 +147,23 @@ export default function Products() {
                       </div>
 
                       <Button
-                        onClick={() => handleOrderProduct(product)}
-                        className="w-full bg-silver text-black hover:bg-silver/90 group/btn"
-                      >
-                        <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                        Order Product
-                      </Button>
+  onClick={() => handleOrderProduct(product)}
+  className="w-full bg-silver text-black hover:bg-silver/90 group/btn gap-2"
+  disabled={isOrdering}
+>
+  {isOrdering ? (
+    <span className="flex items-center justify-center">
+      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+      Ordering...
+    </span>
+  ) : (
+    <>
+      <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
+      Order Product
+    </>
+  )}
+</Button>
+
                     </div>
                   </div>
                 </div>
