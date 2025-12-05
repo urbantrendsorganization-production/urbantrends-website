@@ -195,19 +195,19 @@ function Home() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-black via-gunmetal to-black opacity-95" />
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1739056238852-9ebc2d3f9407?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Tech Background"
             className="w-full h-full object-cover opacity-20"
           />
         </div>
 
         {/* Animated Grid Background */}
-        <div className="absolute inset-0 z-0 opacity-10">
+        {/* <div className="absolute inset-0 z-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'linear-gradient(#BCBCBC 1px, transparent 1px), linear-gradient(90deg, #BCBCBC 1px, transparent 1px)',
             backgroundSize: '50px 50px',
           }} />
-        </div>
+        </div> */}
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
@@ -235,6 +235,7 @@ function Home() {
           >
             We craft cutting-edge software, build scalable products, and deliver services that transform your business vision into reality.
           </motion.p>
+          <br />
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}

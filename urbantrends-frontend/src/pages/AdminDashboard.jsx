@@ -10,6 +10,7 @@ import {
   Settings,
   Download,
   Activity,
+  MonitorCloud,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';;
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
@@ -20,6 +21,7 @@ import AdminOrders from '@/components/AdminOrders';
 import AdminProjects from '@/components/AdminProjects';
 import AdminClients from '@/components/AdminClients';
 import AdminOverview from '@/components/AdminOverview';
+import AdminProducts from '@/components/AdminProducts';
 
 
 export default function AdminDashboard() {
@@ -85,7 +87,8 @@ export default function AdminDashboard() {
               { id: 'projects', label: 'Projects', icon: FolderKanban },
               { id: 'orders', label: 'Orders', icon: ShoppingBag },
               { id: 'analytics', label: 'Analytics', icon: Activity },
-              { id: 'services', label: 'Services', icon: Activity }
+              { id: 'services', label: 'Services', icon: Activity },
+              {id: 'products', label: 'Products', icon: MonitorCloud}
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -105,6 +108,7 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="p-6 w-full mx-auto">
+
         {activeTab === 'overview' && <AdminOverview />}
 
         {activeTab === 'clients' && <AdminClients />}
@@ -116,6 +120,9 @@ export default function AdminDashboard() {
         {activeTab === 'analytics' && <AdminAnalytics />}
 
         {activeTab === 'services' && <AdminServices />}
+
+        {activeTab === 'products' && <AdminProducts />}
+        
       </main>
     </div>
   );

@@ -153,7 +153,7 @@ export function ClientProjects() {
 
             {/* Modal */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent>
+                <DialogContent className={`bg-black`}>
                     <DialogHeader>
                         <DialogTitle>Request Project Access</DialogTitle>
                     </DialogHeader>

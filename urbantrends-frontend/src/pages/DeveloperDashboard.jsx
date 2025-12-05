@@ -25,6 +25,7 @@ import {
   Clock,
   BarChart3,
   Loader2,
+  ArrowRight,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -157,65 +158,60 @@ useEffect(() => {
 
   
   const stats = [
-    {
-      label: 'Total Projects',
-      value: '12',
-      change: '+2 this month',
-      trend: 'up',
-      icon: FolderKanban,
-      color: 'from-silver to-dim-grey',
-    },
-    {
-      label: 'Total Sales',
-      value: '148',
-      change: '+23 this month',
-      trend: 'up',
-      icon: ShoppingBag,
-      color: 'from-silver to-dim-grey',
-    },
-    {
-      label: 'Total Revenue',
-      value: '$42,890',
-      change: '+18.5%',
-      trend: 'up',
-      icon: DollarSign,
-      color: 'from-silver to-dim-grey',
-    },
-    {
-      label: 'Avg. Rating',
-      value: '4.8',
-      change: '+0.2 this month',
-      trend: 'up',
-      icon: Star,
-      color: 'from-silver to-dim-grey',
-    },
-  ];
+  {
+    label: "Total Projects",
+    value: myProjects.length,
+    change: myProjects.length ? `+${myProjects.length} this month` : "0",
+    trend: myProjects.length ? "up" : "neutral",
+    icon: FolderKanban,
+    color: "from-silver to-dim-grey",
+  },
+  {
+    label: "Total Sales",
+    value: recentSales.length,
+    change: recentSales.length ? `+${recentSales.length} this month` : "0",
+    trend: recentSales.length ? "up" : "neutral",
+    icon: ShoppingBag,
+    color: "from-silver to-dim-grey",
+  },
+  {
+    label: "Total Revenue",
+    value: `$${recentSales.reduce((sum, sale) => sum + sale.amount, 0).toLocaleString()}`,
+    change: "+0% this month", // you can compute percentage change if needed
+    trend: recentSales.length ? "up" : "neutral",
+    icon: DollarSign,
+    color: "from-silver to-dim-grey",
+  },
+  {
+    label: "Avg. Rating",
+    value: myProjects.length
+      ? (myProjects.reduce((sum, p) => sum.rating || 0 + sum, 0) / myProjects.length).toFixed(1)
+      : "0",
+    change: "+0 this month", // optional dynamic
+    trend: "up",
+    icon: Star,
+    color: "from-silver to-dim-grey",
+  },
+];
+
 
 
  
 
-  const salesData = [
-    { month: 'Jul', sales: 12, revenue: 2400 },
-    { month: 'Aug', sales: 18, revenue: 3600 },
-    { month: 'Sep', sales: 15, revenue: 3200 },
-    { month: 'Oct', sales: 22, revenue: 4800 },
-    { month: 'Nov', sales: 28, revenue: 6200 },
-    { month: 'Dec', sales: 23, revenue: 5100 },
-  ];
+  const salesData = recentSales.reduce((acc, sale) => {
+  const month = new Date(sale.date).toLocaleString("default", { month: "short" });
+  const existing = acc.find(d => d.month === month);
 
-  const projectPerformanceData = [
-    { week: 'Week 1', views: 245, sales: 8 },
-    { week: 'Week 2', views: 312, sales: 12 },
-    { week: 'Week 3', views: 289, sales: 9 },
-    { week: 'Week 4', views: 356, sales: 15 },
-  ];
+  if (existing) {
+    existing.sales += 1;
+    existing.revenue += sale.amount;
+  } else {
+    acc.push({ month, sales: 1, revenue: sale.amount });
+  }
 
-  const categoryDistribution = [
-    { name: 'Dashboards', value: 35, color: '#BCBCBC' },
-    { name: 'UI Kits', value: 28, color: '#6D6D6D' },
-    { name: 'Templates', value: 22, color: '#404040' },
-    { name: 'Landing Pages', value: 15, color: '#2D2D2D' },
-  ];
+  return acc;
+}, []);
+;
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -312,34 +308,42 @@ useEffect(() => {
           <div className="space-y-6">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                >
-                  <Card className="bg-gunmetal/20 border-dim-grey/30 p-6 hover:border-silver/30 transition-colors">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                        <stat.icon className="w-6 h-6 text-black" />
-                      </div>
-                      <div className={`flex items-center gap-1 text-xs ${stat.trend === 'up' ? 'text-silver' : 'text-dim-grey'
-                        }`}>
-                        {stat.trend === 'up' ? (
-                          <ArrowUpRight className="w-4 h-4" />
-                        ) : (
-                          <ArrowDownRight className="w-4 h-4" />
-                        )}
-                        {stat.change}
-                      </div>
-                    </div>
-                    <div className="text-2xl text-silver mb-1">{stat.value}</div>
-                    <div className="text-sm text-dim-grey">{stat.label}</div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+  {stats.map((stat, index) => (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+    >
+      <Card className="bg-gunmetal/20 border-dim-grey/30 p-6 hover:border-silver/30 transition-colors">
+        <div className="flex items-start justify-between mb-4">
+          {/* Icon */}
+          <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+            <stat.icon className="w-6 h-6 text-black" />
+          </div>
+
+          {/* Trend */}
+          <div className={`flex items-center gap-1 text-xs ${
+            stat.trend === 'up' ? 'text-silver' :
+            stat.trend === 'down' ? 'text-red-500' :
+            'text-dim-grey'
+          }`}>
+            {stat.trend === 'up' && <ArrowUpRight className="w-4 h-4" />}
+            {stat.trend === 'down' && <ArrowDownRight className="w-4 h-4" />}
+            {stat.trend === 'neutral' && <ArrowRight className="w-4 h-4" />}
+            {stat.change}
+          </div>
+        </div>
+
+        {/* Stat Values */}
+        <div className="text-2xl text-silver mb-1">{stat.value}</div>
+        <div className="text-sm text-dim-grey">{stat.label}</div>
+      </Card>
+    </motion.div>
+  ))}
+</div>
+<br />
+
 
             {/* Sales Chart */}
             <motion.div
@@ -390,6 +394,8 @@ useEffect(() => {
                 </ResponsiveContainer>
               </Card>
             </motion.div>
+
+            <br />
 
             {/* Top Performing Projects & Recent Sales */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
