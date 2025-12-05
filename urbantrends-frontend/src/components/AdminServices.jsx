@@ -101,7 +101,7 @@ export default function AdminServices() {
     setDeletingId(id);
     try {
       await axios.delete(
-        `https://urbantrends-backend-production-fde8.up.railway.app/services/${id}`
+        `https://urbantrends-backend-production-fde8.up.railway.app/services/service/${id}`
       );
       toast.success("Deleted");
       fetchServices();
@@ -118,7 +118,7 @@ export default function AdminServices() {
     const prices = service.tiers.map((t) => Number(t.price ?? 0));
     const min = Math.min(...prices);
     const max = Math.max(...prices);
-    return `${service.priceLabel ?? "From"} $${min} - $${max}`;
+    return `${service.priceLabel ?? "From"} ksh${min} - ksh ${max}`;
   };
 
   return (
@@ -140,7 +140,7 @@ export default function AdminServices() {
           </DialogTrigger>
 
           {/* Modal Content */}
-          <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-3xl max-h-[90vh] bg-black overflow-y-auto">
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
               <DialogHeader>
                 <DialogTitle>Add New Service</DialogTitle>
@@ -305,7 +305,7 @@ export default function AdminServices() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: idx * 0.06 }}
               >
-                <Card className="h-full hover:shadow-lg transition-shadow">
+                <Card className="h-full hover:shadow-lg transition-shadow ">
                   <div className="p-5 flex flex-col h-full">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-4">

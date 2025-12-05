@@ -56,6 +56,7 @@ export function ClientDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 const [selectedProjectId, setSelectedProjectId] = useState("");
 const [requestEmail, setRequestEmail] = useState(email || "");
+const [fetchingServices, setFetchingServices] = useState([])
 
   const handleRequestClick = (projectId) => {
   setSelectedProjectId(projectId);
@@ -107,6 +108,21 @@ useEffect(() => {
 
   fetchProjects();
 }, [email]);
+
+useEffect ( () => {
+  if (!email) return;
+
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get(`https://urbantrends-backend-production-fde8.up.railway.app/api/email/${email}`)
+      setFetchingServices(response.data.orders)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  fetchServices();
+}, [email])
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -503,6 +519,8 @@ const handleSubmit = async (e) => {
       <h2 className="text-silver">Order History</h2>
       <Card className="bg-gunmetal/20 border-dim-grey/30 overflow-hidden">
         <div className="overflow-x-auto">
+          <h1 className='text-white'>Products</h1>
+          <br />
           <table className="w-full">
             <thead>
               <tr className="border-b border-gunmetal">
@@ -560,6 +578,65 @@ const handleSubmit = async (e) => {
               })}
             </tbody>
           </table>
+          <h1 className='text-white'>Services</h1>
+
+          <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gunmetal">
+                    <th className="text-left p-4 text-sm text-dim-grey">Order ID</th>
+                    <th className="text-left p-4 text-sm text-dim-grey">Product</th>
+                    <th className="text-left p-4 text-sm text-dim-grey">Customer</th>
+                    <th className="text-left p-4 text-sm text-dim-grey">Date</th>
+                    <th className="text-left p-4 text-sm text-dim-grey">Amount</th>
+                    <th className="text-left p-4 text-sm text-dim-grey">Status</th>
+                    <th className="text-right p-4 text-sm text-dim-grey">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fetchingServices.map((order, index) => {
+                    const orderId = order._id || order.id || index;
+                    const productName = order.product?.name || order.name || "N/A";
+                    const customerName = order.customer?.name || "N/A";
+                    const orderDate = order.createdAt
+                      ? new Date(order.createdAt).toLocaleDateString()
+                      : "N/A";
+                    const amount = order.product?.price
+                      ? `Ksh ${order.product.price}`
+                      : order.price
+                      ? `Ksh ${order.price}`
+                      : "N/A";
+                    const status = order.status || "Pending";
+
+                    return (
+                      <motion.tr
+                        key={orderId}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="border-b border-gunmetal/50 hover:bg-gunmetal/10 transition-colors"
+                      >
+                        <td className="p-4 text-sm text-silver">{orderId}</td>
+                        <td className="p-4 text-sm text-silver">{productName}</td>
+                        <td className="p-4 text-sm text-silver">{customerName}</td>
+                        <td className="p-4 text-sm text-dim-grey">{orderDate}</td>
+                        <td className="p-4 text-sm text-silver">{amount}</td>
+                        <td className="p-4">
+                          <Badge className={getStatusColor(status)}>{status}</Badge>
+                        </td>
+                        <td className="p-4 text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-dim-grey hover:text-silver"
+                          >
+                            View Details
+                          </Button>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </tbody>
+              </table>
         </div>
       </Card>
     </div>

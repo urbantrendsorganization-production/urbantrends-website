@@ -74,7 +74,7 @@ export default function Services() {
     const prices = service.tiers.map((t) => Number(t.price ?? 0));
     const min = Math.min(...prices);
     const max = Math.max(...prices);
-    return `${service.priceLabel ?? "From"} $${min} - $${max}`;
+    return `${service.priceLabel ?? "From"} ksh ${min} - ksh ${max}`;
   };
 
   return (
@@ -159,9 +159,8 @@ export default function Services() {
       </section>
 
       {/* Modal for selected service */}
-      {/* Modal for selected service */}
 <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
-  <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+  <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-black">
     {selectedService && (
       <>
         <DialogHeader>
@@ -191,7 +190,7 @@ export default function Services() {
               {/* Tier Info */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="font-semibold">{tier.name}</div>
-                <div>Price: ${tier.price}</div>
+                <div>Price: ksh {tier.price}</div>
                 <div>Delivery: {tier.deliveryTime} days</div>
                 <div>Revisions: {tier.revisions}</div>
               </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, ListOrdered } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -11,6 +11,7 @@ import axios from 'axios';
 
 export default function CheckOut() {
   const { items, removeFromCart, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
 
   const handleCheckout = async (e) => {
   e.preventDefault();
@@ -26,17 +27,20 @@ export default function CheckOut() {
     phone: e.target.phone.value,
   };
 
+  setLoading(true)
+
   try {
     for (const item of items) {
       const orderPayload = {
-        serviceId: item.service.id,      // only the service ID
-        tierIndex: item.tier.index,      // the index of selected tier in service.tiers
+        serviceId: item.service.id, // only the service ID
+        tierIndex: item.tier.index, // the index of selected tier in service.tiers
         customer: customerData,
         notes: item.notes || "",
       };
 
       console.log("Payload before sending:", orderPayload);
 
+      // Place order
       const response = await axios.post(
         "https://urbantrends-backend-production-fde8.up.railway.app/api/create",
         orderPayload
@@ -45,6 +49,27 @@ export default function CheckOut() {
       if (response.status !== 201) {
         toast.error(`Failed to place order for ${item.service.name}`);
         console.error(response.data);
+        continue;
+      }
+
+      // Send email after successful order
+      const userEmail = localStorage.getItem('userEmail');
+      if (userEmail) {
+        try {
+          await axios.post("https://email-service-production-f8ad.up.railway.app/api/email/send", {
+            email: userEmail,
+            userName: customerData.name,
+            subject: "Service successfully ordered",
+            message: `Your project "${item.service.name}" has been successfully sold. Check your dashboard for details.`,
+            ctaText: "View Dashboard",
+            ctaLink: "https://urbantrends.dev/dashboard",
+          });
+          console.log(`Email sent for ${item.service.name}`);
+        } catch (emailError) {
+          console.error("Failed to send email:", emailError.response?.data || emailError.message);
+        } finally {
+          setLoading(false)
+        }
       }
     }
 
@@ -55,6 +80,7 @@ export default function CheckOut() {
     toast.error("Failed to place order. Please try again.");
   }
 };
+
 
 
   if (items.length === 0) {
@@ -181,9 +207,14 @@ export default function CheckOut() {
                   <Input name="phone" placeholder="Phone Number" className="bg-gunmetal border-dim-grey text-silver" required />
                 </div>
                 <br />
-                <Button type="submit" size="lg" className="w-full bg-silver text-black hover:bg-silver/90">
-                  Place Order
-                </Button>
+                <Button
+              type="submit"
+              size="lg"
+              className="w-full bg-silver text-black hover:bg-silver/90"
+              disabled={loading} // disable button while loading
+            >
+              {loading ? "Processing..." : "Place Order"}
+            </Button>
               </form>
 
             </motion.div>
